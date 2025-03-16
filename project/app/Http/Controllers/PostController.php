@@ -25,8 +25,11 @@ class PostController extends Controller
         $validate = $request->validate([
             'title'=>'required|string|max:225',
             'description'=>'nullable|string',
-            'media'=>'nullable|file',
+            'media'=>'required|file',
         ]);
+
+        $post = Posts::create($validate);
+        return response()->json($post, 201);
     }
 
     /**
@@ -34,15 +37,9 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
+        $post = Posts::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return response()->json($post, 200);
     }
 
     /**
@@ -50,7 +47,16 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validate = $request->validate([
+            'title'=>'required|string|max:225',
+            'description'=>'nullable|string',
+            'media'=>'required|file',
+        ]);
+
+        $post = Posts::findOrFail($id);
+        $post->update($validate);
+
+        return response()->json($post, 200);
     }
 
     /**
@@ -58,6 +64,9 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $post = Posts::findOrFail($id);
+        $post->delete();
+
+        return response()->json(null, 204);
     }
 }
