@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Posts;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -11,15 +12,9 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $post = Posts::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return response()->json($post, 200);
     }
 
     /**
@@ -27,7 +22,11 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+            'title'=>'required|string|max:225',
+            'description'=>'nullable|string',
+            'media'=>'nullable|file',
+        ]);
     }
 
     /**
