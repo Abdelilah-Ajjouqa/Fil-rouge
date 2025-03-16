@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comments;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -11,15 +12,9 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
-    }
+        $comments = Comments::all();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return response()->json($comments, 200);
     }
 
     /**
@@ -27,7 +22,12 @@ class CommentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+            'content'=>'required|string|max:225',
+        ]);
+
+        $comment = Comments::create($validate);
+        return response()->json($comment, 201);
     }
 
     /**
@@ -35,15 +35,8 @@ class CommentController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        $comment = Comments::findOrFail($id);
+        return response()->json($comment, 200);
     }
 
     /**
@@ -51,7 +44,14 @@ class CommentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validate = $request->validate([
+            'content'=>'required|string|max:225',
+        ]);
+
+        $comment = Comments::findOrFail($id);
+        $comment->update($validate);
+
+        return response()->json($comment, 201);
     }
 
     /**
@@ -59,6 +59,9 @@ class CommentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $comment = Comments::findOrFail($id);
+        $comment->delete();
+
+        return response()->json(null, 204);
     }
 }
