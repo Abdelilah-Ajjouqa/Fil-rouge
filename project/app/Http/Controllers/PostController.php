@@ -24,9 +24,15 @@ class PostController extends Controller
     {
         $validate = $request->validate([
             'title'=>'required|string|max:225',
-            'description'=>'nullable|string',
-            'media'=>'required|file',
+            'description'=>'nullable|string|max:225',
+            'user_id'=>'required|exists:users,id',
+            'media'=>'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('media')) {
+            $filePath = $request->file('media')->store('media', 'public');
+            $validate['media'] = $filePath;
+        }
 
         $post = Posts::create($validate);
         return response()->json($post, 201);
@@ -50,10 +56,15 @@ class PostController extends Controller
         $validate = $request->validate([
             'title'=>'required|string|max:225',
             'description'=>'nullable|string',
-            'media'=>'required|file',
+            'media'=>'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $post = Posts::findOrFail($id);
+        if ($request->hasFile('media')) {
+            $filePath = $request->file('media')->store('media', 'public');
+            $validate['media'] = $filePath;
+        }
+
         $post->update($validate);
 
         return response()->json($post, 200);
@@ -68,5 +79,30 @@ class PostController extends Controller
         $post->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function getMedia(string $id)
+    {
+        $post = Posts::findOrFail($id);
+        $media = $post->media;
+
+        return response()->json($media, 200);
+    }
+
+    public function uploadMedia(Request $request, $id)
+    {
+        $validate = $request->validate([
+            'media'=>'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        $post = Posts::findOrFail($id);
+        if ($request->hasFile('media')) {
+            $filePath = $request->file('media')->store('media', 'public');
+            $validate['media'] = $filePath;
+        }
+
+        $post->media()->create($validate);
+
+        return response()->json($post, 201);
     }
 }
