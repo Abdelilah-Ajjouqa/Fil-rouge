@@ -12,9 +12,6 @@ class Posts extends Model
     protected $fillable = [
         'title',
         'description',
-    ];
-
-    protected $hidden = [
         'user_id',
     ];
 
