@@ -32,7 +32,7 @@ class UserController extends Controller
             try {
                 $user = User::findOrFail($id);
                 $user->update($request->all());
-                return response()->json($user, 200);
+                return response()->json(["message" => "you have update your profil by successfuly", $user], 200);
             } catch (Exception $e) {
                 return response()->json(['message' => 'User not updated', 'error' => $e->getMessage()], 400);
             }

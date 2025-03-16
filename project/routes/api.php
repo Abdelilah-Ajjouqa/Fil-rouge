@@ -13,12 +13,13 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanc
 
 // Public routes for posts and comments
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('/post/{id}', [PostController::class, 'show'])->name('show');
+Route::get('/post/{id}', [PostController::class, 'show'])->name('post.show');
 Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
 
 Route::middleware('auth:sanctum')->group(function(){
     // user's routes
-    Route::get('/user', [UserController::class, 'index'])->name('user.index');
+    Route::get('/users', [UserController::class, 'index'])->name('user.index');
+    Route::get('/user/{id}', [UserController::class, 'show'])->name('user.show');
     Route::put('/user/{id}', [UserController::class, 'update'])->name('update');
     Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('destroy');
 
