@@ -26,4 +26,8 @@ class Posts extends Model
     public function media(){
         return $this->hasMany(Media::class);
     }
+
+    public function tags(){
+        return $this->belongsToMany(Tags::class);
+    }
 }
