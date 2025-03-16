@@ -12,4 +12,8 @@ class Media extends Model
         'path',
         'type',
     ];
+
+    public function post(){
+        return $this->belongsTo(Posts::class);
+    }
 }
