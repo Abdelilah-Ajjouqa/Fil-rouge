@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tags;
 use Illuminate\Http\Request;
 
 class TagController extends Controller
@@ -11,15 +12,8 @@ class TagController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $tag = Tags::all();
+        return response()->json($tag, 200);
     }
 
     /**
@@ -27,7 +21,13 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validate = $request->validate([
+            'name'=>'required|string|max:225|unique:tags',
+        ]);
+
+        $tag = Tags::create($validate);
+
+        return response()->json($tag, 201);
     }
 
     /**
@@ -35,15 +35,9 @@ class TagController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
+        $tag = Tags::findOrFail($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
+        return response()->json($tag, 200);
     }
 
     /**
@@ -51,7 +45,13 @@ class TagController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validate = $request->validate([
+            'name'=>'required|string|max:225|unique:tags',
+        ]);
+
+        $tag = Tags::updated($validate);
+
+        return response()->json($tag);
     }
 
     /**
@@ -59,6 +59,9 @@ class TagController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $tag = Tags::findOrFail($id);
+        $tag->delete();
+
+        return response()->json(null, 204);
     }
 }
