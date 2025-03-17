@@ -26,8 +26,8 @@ class PostController extends Controller
             'title' => 'required|string|max:225',
             'description' => 'nullable|string|max:225',
             'user_id' => 'required|exists:users,id',
-            'media' => 'nullable|array', // Accept multiple files
-            'media.*' => 'file|mimes:jpeg,png,jpg,gif,svg|max:2048', // Each file validation
+            'media' => 'nullable', 
+            'media.*' => 'file|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         ]);
 
         $post = Posts::create([
@@ -37,7 +37,9 @@ class PostController extends Controller
         ]);
 
         if ($request->hasFile('media')) {
-            foreach ($request->file('media') as $file) {
+            $files = is_array($request->file('media')) ? $request->file('media') : [$request->file('media')];
+
+            foreach ($files as $file) {
                 $filePath = $file->store('media', 'public');
                 $post->mediaFiles()->create([
                     'user_id' => $post->user_id,
