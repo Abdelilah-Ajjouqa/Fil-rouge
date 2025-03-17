@@ -23,20 +23,33 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'title'=>'required|string|max:225',
-            'description'=>'nullable|string|max:225',
-            'user_id'=>'required|exists:users,id',
-            'media'=>'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'title' => 'required|string|max:225',
+            'description' => 'nullable|string|max:225',
+            'user_id' => 'required|exists:users,id',
+            'media' => 'nullable|array', // Accept multiple files
+            'media.*' => 'file|mimes:jpeg,png,jpg,gif,svg|max:2048', // Each file validation
+        ]);
+
+        $post = Posts::create([
+            'title' => $validate['title'],
+            'description' => $validate['description'] ?? null,
+            'user_id' => $validate['user_id'],
         ]);
 
         if ($request->hasFile('media')) {
-            $filePath = $request->file('media')->store('media', 'public');
-            $validate['media'] = $filePath;
+            foreach ($request->file('media') as $file) {
+                $filePath = $file->store('media', 'public');
+                $post->mediaFiles()->create([
+                    'user_id' => $post->user_id,
+                    'path' => $filePath,
+                    'type' => $file->getClientMimeType(),
+                ]);
+            }
         }
 
-        $post = Posts::create($validate);
-        return response()->json($post, 201);
+        return response()->json($post->load('mediaFiles'), 201);
     }
+
 
     /**
      * Display the specified resource.
@@ -54,9 +67,9 @@ class PostController extends Controller
     public function update(Request $request, string $id)
     {
         $validate = $request->validate([
-            'title'=>'required|string|max:225',
-            'description'=>'nullable|string',
-            'media'=>'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'title' => 'required|string|max:225',
+            'description' => 'nullable|string',
+            'media' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $post = Posts::findOrFail($id);
@@ -84,25 +97,32 @@ class PostController extends Controller
     public function getMedia(string $id)
     {
         $post = Posts::findOrFail($id);
-        $media = $post->media;
+        $media = $post->mediaFiles;
 
         return response()->json($media, 200);
     }
 
+
     public function uploadMedia(Request $request, $id)
     {
-        $validate = $request->validate([
-            'media'=>'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        $request->validate([
+            'media' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         $post = Posts::findOrFail($id);
+
         if ($request->hasFile('media')) {
             $filePath = $request->file('media')->store('media', 'public');
-            $validate['media'] = $filePath;
+
+            $media = $post->mediaFiles()->create([
+                'user_id' => $post->user_id,
+                'path' => $filePath,
+                'type' => $request->file('media')->getClientMimeType(),
+            ]);
+
+            return response()->json($media, 201);
         }
 
-        $post->media()->create($validate);
-
-        return response()->json($post, 201);
+        return response()->json(['message' => 'No file uploaded'], 400);
     }
 }

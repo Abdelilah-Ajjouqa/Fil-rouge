@@ -16,19 +16,24 @@ class Posts extends Model
         'user_id',
     ];
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function comments(){
+    public function comments()
+    {
         return $this->hasMany(Comments::class);
     }
 
-    public function media(){
+    public function mediaFiles()
+    {
         return $this->hasMany(Media::class);
     }
 
-    public function tags(){
+
+    public function tags()
+    {
         return $this->belongsToMany(Tags::class);
     }
 }
