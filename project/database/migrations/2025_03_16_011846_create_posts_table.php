@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('title');
-            $table->string('description');
-            $table->string('content');
+            $table->string('description')->nullable();
+            // $table->string('content')->nullable();
             $table->boolean('is_public')->default(true);
             $table->timestamps();
         });
