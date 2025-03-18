@@ -39,13 +39,13 @@ class PostController extends Controller
 
             // check $post
             if (!$post) {
-                return response()->json(['message' => 'Post not created', 'post'=>$post], 400);
+                return response()->json(['message' => 'Post not created', 'post' => $post], 400);
             }
 
             // check if the files are uploaded
             if ($request->hasFile('media')) {
                 $arr = $request->file('media');
-                
+
                 $files = is_array($arr) ? $arr : [$arr]; //make media as an array to use it in the loop
 
                 foreach ($files as $file) {
@@ -121,24 +121,26 @@ class PostController extends Controller
 
     public function uploadMedia(Request $request, $id)
     {
-        $request->validate([
-            'media' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-
-        $post = Posts::findOrFail($id);
-
-        if ($request->hasFile('media')) {
-            $filePath = $request->file('media')->store('media', 'public');
-
-            $media = $post->mediaFiles()->create([
-                'user_id' => $post->user_id,
-                'path' => $filePath,
-                'type' => $request->file('media')->getClientMimeType(),
+        try {
+            $request->validate([
+                'media' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ]);
 
-            return response()->json($media, 201);
-        }
+            $post = Posts::findOrFail($id);
 
-        return response()->json(['message' => 'No file uploaded'], 400);
+            if ($request->hasFile('media')) {
+                $filePath = $request->file('media')->store('media', 'public');
+
+                $media = $post->mediaFiles()->create([
+                    'user_id' => $post->user_id,
+                    'path' => $filePath,
+                    'type' => $request->file('media')->getClientMimeType(),
+                ]);
+
+                return response()->json($media, 200);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'No file uploaded', 'error' => $e->getMessage()], 400);
+        }
     }
 }
