@@ -74,7 +74,8 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        $post = Posts::findOrFail($id);
+        $search = Posts::findOrFail($id);
+        $post = $search->load('mediaFiles');
 
         return response()->json($post, 200);
     }
