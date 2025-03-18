@@ -22,34 +22,48 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
-            'title' => 'required|string|max:225',
-            'description' => 'nullable|string|max:225',
-            'user_id' => 'required|exists:users,id',
-            'media' => 'nullable', 
-            'media.*' => 'file|mimes:jpeg,png,jpg,gif,svg|max:2048', 
-        ]);
+        try {
+            $validate = $request->validate([
+                'title' => 'required|string|max:225',
+                'description' => 'nullable|string|max:225',
+                'user_id' => 'required|exists:users,id',
+                'media' => 'nullable|array',
+                'media.*' => 'file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
 
-        $post = Posts::create([
-            'title' => $validate['title'],
-            'description' => $validate['description'] ?? null,
-            'user_id' => $validate['user_id'],
-        ]);
+            $post = Posts::create([
+                'title' => $validate['title'],
+                'description' => $validate['description'] ?? null,
+                'user_id' => $validate['user_id'],
+            ]);
 
-        if ($request->hasFile('media')) {
-            $files = is_array($request->file('media')) ? $request->file('media') : [$request->file('media')];
-
-            foreach ($files as $file) {
-                $filePath = $file->store('media', 'public');
-                $post->mediaFiles()->create([
-                    'user_id' => $post->user_id,
-                    'path' => $filePath,
-                    'type' => $file->getClientMimeType(),
-                ]);
+            // check $post
+            if (!$post) {
+                return response()->json(['message' => 'Post not created', 'post'=>$post], 400);
             }
-        }
 
-        return response()->json($post->load('mediaFiles'), 201);
+            // check if the files are uploaded
+            if ($request->hasFile('media')) {
+                $arr = $request->file('media');
+                
+                $files = is_array($arr) ? $arr : [$arr]; //make media as an array to use it in the loop
+
+                foreach ($files as $file) {
+                    $filePath = $file->store('media', 'public');
+                    $post->mediaFiles()->create([
+                        'user_id' => $post->user_id,
+                        'path' => $filePath,
+                        'type' => $file->getClientMimeType(),
+                    ]);
+                }
+            } else {
+                return response()->json(['message' => 'No file uploaded'], 400);
+            }
+
+            return response()->json($post->load('mediaFiles'), 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
     }
 
 
