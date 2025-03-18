@@ -12,7 +12,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        $post = Posts::all();
+        $post = Posts::with('mediaFiles')
+            ->orderBy('created_at', 'desc')
+            // ->pagination(20)
+            ->get();
 
         return response()->json($post, 200);
     }
@@ -27,8 +30,7 @@ class PostController extends Controller
                 'title' => 'required|string|max:225',
                 'description' => 'nullable|string|max:225',
                 'user_id' => 'required|exists:users,id',
-                'media' => 'nullable|array',
-                'media.*' => 'file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'media.*' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,mkv|max:10240',
             ]);
 
             $post = Posts::create([
@@ -85,7 +87,7 @@ class PostController extends Controller
         $validate = $request->validate([
             'title' => 'required|string|max:225',
             'description' => 'nullable|string',
-            'media' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'media' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,mkv|max:10240',
         ]);
 
         $post = Posts::findOrFail($id);
@@ -123,7 +125,7 @@ class PostController extends Controller
     {
         try {
             $request->validate([
-                'media' => 'required|file|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'media' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,mkv|max:10240',
             ]);
 
             $post = Posts::findOrFail($id);
