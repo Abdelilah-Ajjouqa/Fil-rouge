@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Posts;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -85,22 +86,42 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validate = $request->validate([
-            'title' => 'required|string|max:225',
-            'description' => 'nullable|string',
-            'media' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,mkv|max:10240',
-        ]);
+        try {
+            $validate = $request->validate([
+                'title' => 'sometimes|string|max:225',
+                'description' => 'sometimes|nullable|string',
+                'media' => 'sometimes|array',
+                'media.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,mkv|max:10240',
+            ]);
 
-        $post = Posts::findOrFail($id);
-        if ($request->hasFile('media')) {
-            $filePath = $request->file('media')->store('media', 'public');
-            $validate['media'] = $filePath;
+            $post = Posts::findOrFail($id);
+
+            if ($request->hasFile('media')) {
+                // Delete old media files
+                foreach ($post->mediaFiles as $media) {
+                    Storage::delete($media->path);
+                    $media->delete();
+                }
+
+                // add the media updated
+                foreach ($request->file('media') as $file) {
+                    $filePath = $file->store('media', 'public');
+                    $post->mediaFiles()->create([
+                        'user_id' => $post->user_id,
+                        'path' => $filePath,
+                        'type' => $file->getClientMimeType(),
+                    ]);
+                }
+            }
+
+            $post->update($validate);
+
+            return response()->json(["message" => "The post has been updated successfully", "post" => $post->load('mediaFiles')], 200);
+        } catch (\Exception $e) {
+            return response()->json(["message" => "The update has failed", "error" => $e->getMessage()], 400);
         }
-
-        $post->update($validate);
-
-        return response()->json($post, 200);
     }
+
 
     /**
      * Remove the specified resource from storage.
