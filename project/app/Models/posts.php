@@ -26,7 +26,7 @@ class Posts extends Model
         return $this->hasMany(Comments::class);
     }
 
-    public function mediaFiles()
+    public function medias()
     {
         return $this->hasMany(Media::class);
     }
