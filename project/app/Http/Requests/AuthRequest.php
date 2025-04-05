@@ -23,7 +23,7 @@ class AuthRequest extends FormRequest
     {
         $route = $this->route()->getName();
 
-        if ($route === 'register') {
+        if ($route === 'auth.register') {
             $rules = [
                 'first_name' => 'required|string|max:225',
                 'last_name' => 'required|string|max:225',
@@ -31,7 +31,7 @@ class AuthRequest extends FormRequest
                 'email' => 'required|email|string|max:225|unique:users',
                 'password' => 'required|string|min:8|confirmed',
             ];
-        } elseif ($route === 'login') {
+        } elseif ($route === 'auth.login') {
             $rules = [
                 'email' => 'required|string|email|max:225',
                 'password' => 'required|string|min:8',

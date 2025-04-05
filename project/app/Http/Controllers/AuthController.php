@@ -14,13 +14,13 @@ class AuthController extends Controller
 {
     public function register(AuthRequest $request){
         try {
-        $request->validated();
+        $data = $request->validated();
             $user = User::create([
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'username' => $request->username,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'first_name' => $data['first_name'],
+                'last_name' => $data['last_anme'],
+                'username' => $data['username'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
             ]);
 
             return response()->json(["User"=>$user], 201);
@@ -32,15 +32,15 @@ class AuthController extends Controller
 
     public function login(AuthRequest $request){
         try{
-            $request->validated();
+            $data = $request->validated();
 
-            $user = User::where("email", $request->email)->first();
+            $user = User::where("email", $data['email'])->first();
 
-            if (!$user || !Hash::check($request->password, $user->password)){
+            if (!$user || !Hash::check($data['password'], $user->password)){
                 return response()->json(["message"=>"Email or Password is incorrect !"], 401);
             }
 
-            $token = $user->createToken("Abdelilah",["*"])->plainTextToken;
+            $token = $user->createToken('user_token_' . $user->id)->plainTextToken;
 
             return response()->json(["message"=>"you have login by succesfully", "token"=>$token], 200);
 
