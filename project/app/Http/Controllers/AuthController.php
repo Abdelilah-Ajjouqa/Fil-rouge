@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use Exception;
 use Illuminate\Http\Request;
@@ -30,16 +31,9 @@ class AuthController extends Controller
         }
     }
 
-    public function login(Request $request){
+    public function login(LoginRequest $request){
         try{
-            $validate = Validator::make($request->all(), [
-                'email' => 'required|string|email|max:225',
-                'password' => 'required|string|min:8',
-            ]);
-
-            if ($validate->fails()){
-                return response()->json(["message"=>"error", "error"=>$validate->errors()], 401);
-            }
+            $request->validated();
 
             $user = User::where("email", $request->email)->first();
 
