@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\AuthRequest;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -13,7 +12,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
-    public function register(RegisterRequest $request){
+    public function register(AuthRequest $request){
         try {
         $request->validated();
             $user = User::create([
@@ -31,7 +30,7 @@ class AuthController extends Controller
         }
     }
 
-    public function login(LoginRequest $request){
+    public function login(AuthRequest $request){
         try{
             $request->validated();
 
