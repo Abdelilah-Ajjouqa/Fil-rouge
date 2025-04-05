@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterRequest;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -11,20 +12,9 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
-    public function register(Request $request){
+    public function register(RegisterRequest $request){
         try {
-            $validate = Validator::make($request->all(), [
-                'first_name' => 'required|string|max:225',
-                'last_name' => 'required|string|max:225',
-                'username' => 'required|string|max:225|unique:users',
-                'email' => 'required|email|string|max:225|unique:users',
-                'password' => 'required|string|min:8|confirmed',
-            ]);
-
-            if($validate->fails()){
-                return response()->json(["message"=>"error", "error"=>$validate->errors()], 401);
-            }
-
+        $request->validated();
             $user = User::create([
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
@@ -33,7 +23,7 @@ class AuthController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            return response()->json(["Users"=>$user], 201);
+            return response()->json(["User"=>$user], 201);
 
         } catch (Exception $e) {
             return response()->json(["message"=>"error", "error"=>$e->getMessage()], 500);
