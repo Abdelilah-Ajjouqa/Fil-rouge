@@ -17,7 +17,7 @@ Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/post/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
 
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware(['auth:sanctum', 'userStatus'])->group(function(){
     // user's routes
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/user/{id}', [UserController::class, 'show'])->name('user.show');
