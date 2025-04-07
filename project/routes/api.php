@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 
@@ -32,4 +33,10 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
     Route::put('/comment/{id}', [CommentController::class, 'update'])->name('comment.update');
     Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('comment.destroy');
+
+    Route::middleware('is_admin:admin')->group(function(){
+        Route::get('/admin', function() {
+            return response()->json(["message" => "this is admin's dashboard"], 200);
+        });
+    });
 });
