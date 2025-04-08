@@ -20,7 +20,7 @@ class UserStatusMiddleware
             return response()->json(["message" => "You need to login first !"], 401);
         }
 
-        if(!$request()->user()->is_active){
+        if(!$request->user()->is_active){
             Auth::logout();
             return response()->json(["message" => "Your account has been locked"], 401);
         }

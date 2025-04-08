@@ -43,6 +43,12 @@ class AuthController extends Controller
 
             $token = $user->createToken('user_token_' . $user->id)->plainTextToken;
 
+            if (!$user->is_active) {
+                return response()->json([
+                    'message' => 'Your account has been locked'
+                ], 401);
+            }
+
             return response()->json(["message"=>"you have login by succesfully", "token"=>$token], 200);
 
         } catch (Exception $e){
