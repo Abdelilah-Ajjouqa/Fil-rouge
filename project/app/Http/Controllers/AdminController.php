@@ -41,11 +41,6 @@ class AdminController extends Controller
     {
         try {
             $user = User::findOrFail($id);
-
-            if (!$user) {
-                return response()->json(['message' => 'User not found'], 404);
-            }
-
             $user->is_active = true;
             $user->save();
 
@@ -56,15 +51,9 @@ class AdminController extends Controller
     }
 
     public function deactivateUser($id)
-
     {
         try {
             $user = User::findOrFail($id);
-
-            if (!$user) {
-                return response()->json(['message' => 'User not found'], 404);
-            }
-
             $user->is_active = false;
             $user->save();
 
