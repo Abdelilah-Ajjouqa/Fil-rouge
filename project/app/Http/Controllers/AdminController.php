@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Posts;
 use App\Models\User;
 use Exception;
 
@@ -60,6 +61,17 @@ class AdminController extends Controller
             return response()->json(['message' => 'User desactivated successfully'], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'Error', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function deletePost($id){
+        try {
+            $post = Posts::findOrFail($id);
+            $post->delete();
+
+            return response()->json(null, 204);
+        } catch(Exception $e){
+            return response()->json(["message" => "Error", "error" => $e->getMessage()], 500);
         }
     }
 }
