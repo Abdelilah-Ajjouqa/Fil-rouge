@@ -24,7 +24,6 @@ class PostRequest extends FormRequest
         return [
             'title' => 'required|string|max:225',
             'description' => 'nullable|string|max:225',
-            'user_id' => 'required|exists:users,id',
             'media.*' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,mkv|max:10240',
         ];
     }

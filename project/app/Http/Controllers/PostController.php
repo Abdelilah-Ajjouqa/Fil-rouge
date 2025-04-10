@@ -34,7 +34,7 @@ class PostController extends Controller
             $post = Posts::create([
                 'title' => $validate['title'],
                 'description' => $validate['description'] ?? null,
-                'user_id' => $validate['user_id'],
+                'user_id' => $request->user()->id(),
             ]);
 
             // check $post
