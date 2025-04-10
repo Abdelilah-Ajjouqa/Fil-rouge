@@ -11,7 +11,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::withCount('posts')->get();
 
         if($users->isEmpty()) {
             return response()->json(['message' => 'No users found'], 404);
@@ -20,11 +20,21 @@ class UserController extends Controller
         return response()->json($users, 200);
     }
 
-    public function show(string $id)
+    public function show(string $userId)
     {
-        $user = User::findOrFail($id);
+        $user = User::findOrFail($userId);
 
-        return response()->json($user, 200);
+        // return the user with their posts
+        $user->load('posts');
+
+        if ($user->posts->isEmpty()) {
+            return response()->json(['message' => 'No posts found for this user'], 200);
+        }
+        return response()->json([
+            'user' => $user,
+            'posts' => $user->posts,
+            'posts_count' => $user->posts->count
+        ], 200);
     }
 
     public function update(UserRequest $request, string $id)
