@@ -24,8 +24,9 @@ class UserRequest extends FormRequest
         return [
             'first_name' => 'sometimes|string|max:255',
             'last_name' => 'sometimes|string|max:255',
-            // 'email' => 'sometimes|string|email|max:255|unique:users,email,'.$id,
             'username' => 'sometimes|string|max:255|unique:users',
+            'avatar' => 'sometimes|image|max:5120',
+            'cover' => 'somtimes|image|max:5120'
         ];
     }
 }

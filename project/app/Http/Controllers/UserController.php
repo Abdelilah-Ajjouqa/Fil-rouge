@@ -39,13 +39,35 @@ class UserController extends Controller
 
     public function update(UserRequest $request, string $id)
     {
-            try {
-                $user = User::findOrFail($id);
-                $user->update($request->validated());
-                return response()->json(["message" => "You have updated your profile successfully", "user" => $user], 200);
-            } catch (Exception $e) {
-                return response()->json(['message' => 'User not updated', 'error' => $e->getMessage()], 400);
+        try {
+            $user = User::findOrFail($id);
+            $data = $request->validated();
+
+            // Handle avatar upload
+            if ($request->hasFile('avatar')) {
+                $avatarName = time() . '_' . $request->file('avatar')->getClientOriginalName();
+                $request->file('avatar')->storeAs('public/avatars', $avatarName);
+                $data['avatar'] = 'avatars/' . $avatarName;
             }
+
+            // Handle cover upload
+            if ($request->hasFile('cover')) {
+                $coverName = time() . '_' . $request->file('cover')->getClientOriginalName();
+                $request->file('cover')->storeAs('public/covers', $coverName);
+                $data['cover'] = 'covers/' . $coverName;
+            }
+
+            $user->update($data);
+            return response()->json([
+                "message" => "Profile updated successfully",
+                "user" => $user
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'User not updated',
+                'error' => $e->getMessage()
+            ], 400);
+        }
     }
 
     public function destroy(string $id)
