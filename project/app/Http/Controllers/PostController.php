@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Models\Posts;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Exception;
 
 class PostController extends Controller
 {
@@ -13,7 +15,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $post = Posts::with('medias')
+        $post = Posts::with('mediaContent')
             ->orderBy('created_at', 'desc')
             // ->pagination(20)
             ->get();
@@ -24,15 +26,10 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(PostRequest $request)
     {
         try {
-            $validate = $request->validate([
-                'title' => 'required|string|max:225',
-                'description' => 'nullable|string|max:225',
-                'user_id' => 'required|exists:users,id',
-                'media.*' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,mkv|max:10240',
-            ]);
+            $validate = $request->validated();
 
             $post = Posts::create([
                 'title' => $validate['title'],
@@ -53,18 +50,20 @@ class PostController extends Controller
 
                 foreach ($files as $file) {
                     $filePath = $file->store('media', 'public');
-                    $post->medias()->create([
+                    $post->mediaContent()->create([
                         'user_id' => $post->user_id,
                         'path' => $filePath,
                         'type' => $file->getClientMimeType(),
                     ]);
                 }
+
+                return response()->json($post->load("mediaContent"), 201);
             } else {
                 return response()->json(['message' => 'No file uploaded'], 400);
             }
 
-            return response()->json($post->load('medias'), 201);
-        } catch (\Exception $e) {
+            return response()->json($post->load('mediaContent'), 201);
+        } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
     }
@@ -76,7 +75,7 @@ class PostController extends Controller
     public function show(string $id)
     {
         $search = Posts::findOrFail($id);
-        $post = $search->load('medias');
+        $post = $search->load('mediaContent');
 
         return response()->json($post, 200);
     }
@@ -84,21 +83,16 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PostRequest $request, string $id)
     {
         try {
-            $validate = $request->validate([
-                'title' => 'sometimes|string|max:225',
-                'description' => 'sometimes|nullable|string',
-                'media' => 'sometimes|array',
-                'media.*' => 'file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,mkv|max:10240',
-            ]);
+            $validate = $request->validated();
 
             $post = Posts::findOrFail($id);
 
             if ($request->hasFile('media')) {
                 // Delete old media files
-                foreach ($post->medias as $media) {
+                foreach ($post->mediaContent as $media) {
                     Storage::delete($media->path);
                     $media->delete();
                 }
@@ -106,7 +100,7 @@ class PostController extends Controller
                 // add the media updated
                 foreach ($request->file('media') as $file) {
                     $filePath = $file->store('media', 'public');
-                    $post->medias()->create([
+                    $post->mediaContent()->create([
                         'user_id' => $post->user_id,
                         'path' => $filePath,
                         'type' => $file->getClientMimeType(),
@@ -116,8 +110,8 @@ class PostController extends Controller
 
             $post->update($validate);
 
-            return response()->json(["message" => "The post has been updated successfully", "post" => $post->load('medias')], 200);
-        } catch (\Exception $e) {
+            return response()->json(["message" => "The post has been updated successfully", "post" => $post->load('mediaContent')], 200);
+        } catch (Exception $e) {
             return response()->json(["message" => "The update has failed", "error" => $e->getMessage()], 400);
         }
     }
@@ -137,7 +131,7 @@ class PostController extends Controller
     public function getMedia(string $id)
     {
         $post = Posts::findOrFail($id);
-        $media = $post->medias;
+        $media = $post->mediaContent;
 
         return response()->json($media, 200);
     }
@@ -155,7 +149,7 @@ class PostController extends Controller
             if ($request->hasFile('media')) {
                 $filePath = $request->file('media')->store('media', 'public');
 
-                $media = $post->medias()->create([
+                $media = $post->mediaContent()->create([
                     'user_id' => $post->user_id,
                     'path' => $filePath,
                     'type' => $request->file('media')->getClientMimeType(),
@@ -163,7 +157,7 @@ class PostController extends Controller
 
                 return response()->json($media, 200);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['message' => 'No file uploaded', 'error' => $e->getMessage()], 400);
         }
     }
