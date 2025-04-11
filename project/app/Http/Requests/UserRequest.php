@@ -24,9 +24,9 @@ class UserRequest extends FormRequest
         return [
             'first_name' => 'sometimes|string|max:255',
             'last_name' => 'sometimes|string|max:255',
-            'username' => 'sometimes|string|max:255|unique:users',
+            'username' => 'sometimes|string|max:255|unique:users,username,' . $this->route('id'),
             'avatar' => 'sometimes|image|max:5120',
-            'cover' => 'somtimes|image|max:5120'
+            'cover' => 'sometimes|image|max:5120'
         ];
     }
 }

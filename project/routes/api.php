@@ -20,9 +20,9 @@ Route::get('/comments', [CommentController::class, 'index'])->name('comments.ind
 Route::middleware(['auth:sanctum', 'userStatus'])->group(function(){
     // user's routes
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
-    Route::get('/user/{id}', [UserController::class, 'show'])->name('user.show');
-    Route::put('/user/{id}', [UserController::class, 'update'])->name('user.update');
-    Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    Route::get('/profile/{id}', [UserController::class, 'show'])->name('user.show');
+    Route::post('/profile/{id}', [UserController::class, 'update'])->name('user.update');
+    Route::delete('/profile/{id}', [UserController::class, 'destroy'])->name('user.destroy');
 
     // post's routes
     Route::post('/post', [PostController::class, 'store'])->name('post.store');

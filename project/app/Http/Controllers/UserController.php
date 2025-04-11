@@ -13,7 +13,7 @@ class UserController extends Controller
     {
         $users = User::withCount('posts')->get();
 
-        if($users->isEmpty()) {
+        if ($users->isEmpty()) {
             return response()->json(['message' => 'No users found'], 404);
         }
 
@@ -28,7 +28,7 @@ class UserController extends Controller
         $user->load('posts');
 
         if ($user->posts->isEmpty()) {
-            return response()->json(['message' => 'No posts found for this user'], 200);
+            return response()->json(['message' => 'No posts found for this user', 'user' => $user], 200);
         }
         return response()->json([
             'user' => $user,
@@ -47,14 +47,14 @@ class UserController extends Controller
             if ($request->hasFile('avatar')) {
                 $avatarName = time() . '_' . $request->file('avatar')->getClientOriginalName();
                 $request->file('avatar')->storeAs('public/avatars', $avatarName);
-                $data['avatar'] = 'avatars/' . $avatarName;
+                $data['avatar'] = 'storage/avatars/' . $avatarName;
             }
 
             // Handle cover upload
             if ($request->hasFile('cover')) {
                 $coverName = time() . '_' . $request->file('cover')->getClientOriginalName();
                 $request->file('cover')->storeAs('public/covers', $coverName);
-                $data['cover'] = 'covers/' . $coverName;
+                $data['cover'] = 'storage/covers/' . $coverName;
             }
 
             $user->update($data);
@@ -80,5 +80,4 @@ class UserController extends Controller
             return response()->json(['message' => 'User not deleted', 'error' => $e->getMessage()], 500);
         }
     }
-
 }
