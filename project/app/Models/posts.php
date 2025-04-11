@@ -14,7 +14,12 @@ class Posts extends Model
         'description',
         'media',
         'user_id',
+        'status'
     ];
+
+    const is_public = 'public';
+    const is_private = 'private';
+    const is_archived = 'archived';
 
     public function user()
     {
@@ -30,7 +35,6 @@ class Posts extends Model
     {
         return $this->hasMany(Media::class);
     }
-
 
     public function tags()
     {
