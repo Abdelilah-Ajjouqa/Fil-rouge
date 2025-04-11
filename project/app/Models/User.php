@@ -53,15 +53,18 @@ class User extends Authenticatable
         ];
     }
 
-    public function posts () {
+    public function posts()
+    {
         return $this->hasMany(Posts::class);
     }
 
-    public function comments(){
+    public function comments()
+    {
         return $this->hasMany(Comments::class);
     }
 
-    public function getRole(string $role){
+    public function getRole(string $role)
+    {
         return $this->role === $role;
     }
 }

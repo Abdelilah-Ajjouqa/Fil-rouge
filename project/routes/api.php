@@ -17,7 +17,7 @@ Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/post/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
 
-Route::middleware(['auth:sanctum', 'userStatus'])->group(function(){
+Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     // user's routes
     Route::get('/users', [UserController::class, 'index'])->name('user.index');
     Route::get('/profile/{id}', [UserController::class, 'show'])->name('user.show');
@@ -34,8 +34,8 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function(){
     Route::put('/comment/{id}', [CommentController::class, 'update'])->name('comment.update');
     Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('comment.destroy');
 
-    Route::middleware('is_admin:admin')->group(function(){
-        Route::get('/admin', function() {
+    Route::middleware('is_admin:admin')->group(function () {
+        Route::get('/admin', function () {
             return response()->json(["message" => "this is admin's dashboard"], 200);
         });
     });

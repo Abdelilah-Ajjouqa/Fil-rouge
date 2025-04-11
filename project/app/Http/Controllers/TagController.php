@@ -22,7 +22,7 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'name'=>'required|string|max:225|unique:tags',
+            'name' => 'required|string|max:225|unique:tags',
         ]);
 
         $tag = Tags::create($validate);
@@ -46,7 +46,7 @@ class TagController extends Controller
     public function update(Request $request, string $id)
     {
         $validate = $request->validate([
-            'name'=>'required|string|max:225|unique:tags',
+            'name' => 'required|string|max:225|unique:tags',
         ]);
 
         $tag = Tags::updated($validate);

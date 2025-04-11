@@ -12,9 +12,10 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
-    public function register(AuthRequest $request){
+    public function register(AuthRequest $request)
+    {
         try {
-        $data = $request->validated();
+            $data = $request->validated();
             $user = User::create([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
@@ -24,21 +25,21 @@ class AuthController extends Controller
                 'role' => 'user',
             ]);
 
-            return response()->json(["User"=>$user], 201);
-
+            return response()->json(["User" => $user], 201);
         } catch (Exception $e) {
-            return response()->json(["message"=>"error", "error"=>$e->getMessage()], 500);
+            return response()->json(["message" => "error", "error" => $e->getMessage()], 500);
         }
     }
 
-    public function login(AuthRequest $request){
-        try{
+    public function login(AuthRequest $request)
+    {
+        try {
             $data = $request->validated();
 
             $user = User::where("email", $data['email'])->first();
 
-            if (!$user || !Hash::check($data['password'], $user->password)){
-                return response()->json(["message"=>"Email or Password is incorrect !"], 401);
+            if (!$user || !Hash::check($data['password'], $user->password)) {
+                return response()->json(["message" => "Email or Password is incorrect !"], 401);
             }
 
             $token = $user->createToken('user_token_' . $user->id)->plainTextToken;
@@ -49,21 +50,20 @@ class AuthController extends Controller
                 ], 401);
             }
 
-            return response()->json(["message"=>"you have login by succesfully", "token"=>$token], 200);
-
-        } catch (Exception $e){
-            return response()->json(["message"=>"error", "error"=>$e->getMessage()], 500);
+            return response()->json(["message" => "you have login by succesfully", "token" => $token], 200);
+        } catch (Exception $e) {
+            return response()->json(["message" => "error", "error" => $e->getMessage()], 500);
         }
     }
 
-    public function logout(Request $request){
-        try{
+    public function logout(Request $request)
+    {
+        try {
             $request->user()->currentAccessToken()->delete(); //delete all tokens
 
-            return response()->json(["message"=>"you logout"], 200);
-
-        } catch (Exception $e){
-            return response()->json(["message"=>"error", "error"=>$e->getMessage()], 500);
+            return response()->json(["message" => "you logout"], 200);
+        } catch (Exception $e) {
+            return response()->json(["message" => "error", "error" => $e->getMessage()], 500);
         }
     }
 }

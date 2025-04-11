@@ -24,7 +24,8 @@ class AdminController extends Controller
         }
     }
 
-    public function getAllInactiveUsers(){
+    public function getAllInactiveUsers()
+    {
         try {
             $users = User::where('is_active', false)->get();
 
@@ -64,13 +65,14 @@ class AdminController extends Controller
         }
     }
 
-    public function deletePost($id){
+    public function deletePost($id)
+    {
         try {
             $post = Posts::findOrFail($id);
             $post->delete();
 
             return response()->json(null, 204);
-        } catch(Exception $e){
+        } catch (Exception $e) {
             return response()->json(["message" => "Error", "error" => $e->getMessage()], 500);
         }
     }

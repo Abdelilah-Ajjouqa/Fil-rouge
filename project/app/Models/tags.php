@@ -10,7 +10,8 @@ class Tags extends Model
         'name',
     ];
 
-    public function posts(){
+    public function posts()
+    {
         return $this->belongsToMany(Posts::class);
     }
 }

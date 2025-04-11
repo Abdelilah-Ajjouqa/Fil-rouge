@@ -23,7 +23,7 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $validate = $request->validate([
-            'content'=>'required|string|max:225',
+            'content' => 'required|string|max:225',
         ]);
 
         $comment = Comments::create($validate);
@@ -45,7 +45,7 @@ class CommentController extends Controller
     public function update(Request $request, string $id)
     {
         $validate = $request->validate([
-            'content'=>'required|string|max:225',
+            'content' => 'required|string|max:225',
         ]);
 
         $comment = Comments::findOrFail($id);
