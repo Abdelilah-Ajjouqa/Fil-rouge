@@ -21,17 +21,17 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     // User routes
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/{id}', [UserController::class, 'show'])->name('users.show');
-    Route::put('users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::post('users/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // Post routes
     Route::post('posts', [PostController::class, 'store'])->name('posts.store');
-    Route::put('posts/{id}', [PostController::class, 'update'])->name('posts.update');
+    Route::post('posts/{id}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
 
     // Comment routes
     Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
-    Route::put('comments/{id}', [CommentController::class, 'update'])->name('comments.update');
+    Route::post('comments/{id}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     // Admin routes
