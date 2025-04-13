@@ -14,7 +14,7 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 
 // Public routes that don't need status checking
 Route::get('posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('comments', [CommentController::class, 'index'])->name('comments.index');
+Route::get('posts/{post_id}/comments', [CommentController::class, 'index'])->name('comments.index');
 
 Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     // User routes
@@ -34,9 +34,9 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     Route::post('posts', [PostController::class, 'store'])->name('posts.store');
 
     // Comment routes
-    Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
-    Route::post('comments/{id}', [CommentController::class, 'update'])->name('comments.update');
-    Route::delete('comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::post('posts/{post_id}/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::post('posts/{post_id}/comments/{comment_id}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('posts/{post_id}/comments/{comment_id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     // Admin routes
     Route::middleware('is_admin:admin')->group(function () {
