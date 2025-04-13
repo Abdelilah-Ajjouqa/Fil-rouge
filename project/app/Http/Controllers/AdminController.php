@@ -13,7 +13,7 @@ class AdminController extends Controller
     public function dashboard()
     {
         try {
-            $user = Auth::user();
+            $user = Auth::user();   
             if (!$user || !$user->getRole('admin')) {
                 return response()->json(['message' => 'Only admin can access to this page'], 403);
             }
