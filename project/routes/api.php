@@ -36,9 +36,7 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
 
     Route::middleware('is_admin:admin')->group(function () {
         // Admin dashboard
-        Route::get('/admin', function () {
-            return response()->json(["message" => "this is admin's dashboard"], 200);
-        });
+        Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
         // User management routes
         Route::get('/admin/users/active', [AdminController::class, 'getAllActiveUsers'])->name('admin.users.active');

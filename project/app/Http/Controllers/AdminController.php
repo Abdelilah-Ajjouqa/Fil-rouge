@@ -6,10 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Posts;
 use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+    public function dashboard()
+    {
+        try {
+            $user = User::user();
+            if (!$user || !$user->getRole('admin')) {
+                return response()->json(['message' => 'Only admin can access to this page'], 403);
+            }
+
+            // Admin dashboard logic goes here
+            return response()->json(["message" => "this is admin's dashboard"], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error', 'error' => $e->getMessage()], 500);
+        }
+    }
+
     public function getAllActiveUsers()
     {
         try {
