@@ -82,6 +82,20 @@ class AdminController extends Controller
         }
     }
 
+    public function getAllArchivePosts(){
+        try {
+            $posts = Posts::where('status', Posts::is_archived)->get();
+
+            if ($posts->isEmpty()) {
+                return response()->json(['message' => 'No archived posts found'], 200);
+            }
+
+            return response()->json($posts, 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error', 'error' => $e->getMessage()], 500);
+        }
+    }
+
     public function restorePost($id)
     {
         try {

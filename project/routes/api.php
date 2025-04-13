@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
@@ -34,8 +35,21 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('comment.destroy');
 
     Route::middleware('is_admin:admin')->group(function () {
+        // Admin dashboard
         Route::get('/admin', function () {
             return response()->json(["message" => "this is admin's dashboard"], 200);
         });
+
+        // User management routes
+        Route::get('/admin/users/active', [AdminController::class, 'getAllActiveUsers'])->name('admin.users.active');
+        Route::get('/admin/users/inactive', [AdminController::class, 'getAllInactiveUsers'])->name('admin.users.inactive');
+        Route::put('/admin/users/{id}/activate', [AdminController::class, 'activateUser'])->name('admin.users.activate');
+        Route::put('/admin/users/{id}/deactivate', [AdminController::class, 'deactivateUser'])->name('admin.users.deactivate');
+
+        // Post management routes
+        Route::get('/admin/posts/{id}/archive', [AdminController::class, 'getAllArchivePosts'])->name('admin.archive');
+        Route::post('/admin/posts/{id}/archive', [AdminController::class, 'archivePost'])->name('admin.posts.archive');
+        Route::post('/admin/posts/{id}/restore', [AdminController::class, 'restorePost'])->name('admin.posts.restore');
+        Route::delete('/admin/posts/{id}', [AdminController::class, 'deletePost'])->name('admin.posts.delete');
     });
 });

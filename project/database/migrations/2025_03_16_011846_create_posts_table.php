@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('title');
             $table->string('description')->nullable();
             $table->enum('status', ['public', 'private', 'archived'])->default('public');
-            $table->boolean('is_public')->default(true);
             $table->timestamps();
         });
     }
