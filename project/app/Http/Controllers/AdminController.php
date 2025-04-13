@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\User;
 use Exception;
@@ -13,7 +14,7 @@ class AdminController extends Controller
     public function dashboard()
     {
         try {
-            $user = Auth::user();   
+            $user = Auth::user();
             if (!$user || !$user->getRole('admin')) {
                 return response()->json(['message' => 'Only admin can access to this page'], 403);
             }
@@ -97,7 +98,8 @@ class AdminController extends Controller
         }
     }
 
-    public function getAllArchivePosts(){
+    public function getAllArchivePosts()
+    {
         try {
             $posts = Posts::where('status', Posts::is_archived)->get();
 
@@ -152,6 +154,22 @@ class AdminController extends Controller
             return response()->json(['message' => 'Post deleted successfully'], 200);
         } catch (Exception $e) {
             return response()->json(["message" => "Error", "error" => $e->getMessage()], 500);
+        }
+    }
+
+    public function deleteComment($id){
+        try {
+            $comment = Comments::findOrFail($id);
+            $user = Auth::user();
+
+            if (!$user->getRole('admin')){
+                return response()->json(['message' => "Only admin who can do this action"], 403);
+            }
+
+            $comment->delete();
+            return response()->json(['message' => 'Comment deleted by successfuly', 200]);
+        } catch (Exception $e){
+            return response()->json(['message' => 'error', 'error' => $e->getMessage()], 500);
         }
     }
 }

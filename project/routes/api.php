@@ -18,7 +18,7 @@ Route::get('comments', [CommentController::class, 'index'])->name('comments.inde
 
 Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     // User routes
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    // Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::post('users/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
@@ -44,6 +44,7 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
         Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
         // User management
+        Route::get('admin/users', [UserController::class, 'index'])->name('admin.users.index');
         Route::get('admin/users/active', [AdminController::class, 'getAllActiveUsers'])->name('admin.users.active');
         Route::get('admin/users/inactive', [AdminController::class, 'getAllInactiveUsers'])->name('admin.users.inactive');
         Route::put('admin/users/{id}/activate', [AdminController::class, 'activateUser'])->name('admin.users.activate');
@@ -54,5 +55,8 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
         Route::put('admin/posts/{id}/archive', [AdminController::class, 'archivePost'])->name('admin.posts.archive');
         Route::put('admin/posts/{id}/restore', [AdminController::class, 'restorePost'])->name('admin.posts.restore');
         Route::delete('admin/posts/{id}/force', [AdminController::class, 'deletePost'])->name('admin.posts.force-delete');
+
+        // Comment managemnet
+        Route::delete('admin/comment/{id}/force', [AdminController::class, 'deleteComment'])->name('admin.comments.force-delete');
     });
 });
