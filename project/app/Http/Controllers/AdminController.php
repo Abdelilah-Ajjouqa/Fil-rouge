@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Posts;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -65,13 +66,61 @@ class AdminController extends Controller
         }
     }
 
+    public function archivePost($id)
+    {
+        try {
+            $post = Posts::findOrFail($id);
+            $post->status = Posts::is_archived;
+            $post->save();
+
+            return response()->json([
+                'message' => 'Post archived successfully',
+                'post' => $post
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error archiving post', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function restorePost($id)
+    {
+        try {
+            $post = Posts::findOrFail($id);
+            if ($post->status !== Posts::is_archived) {
+                return response()->json(['message' => 'Post is not archived'], 400);
+            }
+
+            $post->status = Posts::is_public;
+            $post->save();
+
+            return response()->json([
+                'message' => 'Post restored successfully',
+                'post' => $post
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Error restoring post', 'error' => $e->getMessage()], 500);
+        }
+    }
+
     public function deletePost($id)
     {
         try {
             $post = Posts::findOrFail($id);
-            $post->delete();
+            $user = User::user();
 
-            return response()->json(null, 204);
+            // Admin can only delete archived posts
+            if ($user->getRole('admin')) {
+                if ($post->status !== Posts::is_archived) {
+                    return response()->json(['message' => 'Admin can only delete archived posts'], 400);
+                }
+            }
+            // Regular users can delete their own posts
+            else if ($post->user_id !== $user->id) {
+                return response()->json(['message' => 'Unauthorized to delete this post'], 403);
+            }
+
+            $post->delete();
+            return response()->json(['message' => 'Post deleted successfully'], 200);
         } catch (Exception $e) {
             return response()->json(["message" => "Error", "error" => $e->getMessage()], 500);
         }
