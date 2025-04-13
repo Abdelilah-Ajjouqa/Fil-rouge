@@ -24,7 +24,7 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // Post routes that need status checking
-    Route::middleware('post.status')->group(function () {
+    Route::middleware('postStatus')->group(function () {
         Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show');
         Route::post('posts/{id}', [PostController::class, 'update'])->name('posts.update');
         Route::delete('posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');

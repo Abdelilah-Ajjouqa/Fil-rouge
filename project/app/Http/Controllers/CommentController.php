@@ -30,7 +30,7 @@ class CommentController extends Controller
         Posts::findOrFail($post_id);
 
         $comment = Comments::create([
-            ...$request->validated(),
+            'content' => $request->validated()['content'],
             'user_id' => Auth::id(),
             'post_id' => $post_id
         ]);
