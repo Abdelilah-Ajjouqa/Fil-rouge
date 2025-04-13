@@ -7,47 +7,48 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+// Auth routes
+Route::post('register', [AuthController::class, 'register'])->name('auth.register');
+Route::post('login', [AuthController::class, 'login'])->name('auth.login');
+Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::post('/register', [AuthController::class, 'register'])->name("auth.register");
-Route::post('/login', [AuthController::class, 'login'])->name("auth.login");
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-
-// Public routes for posts and comments
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('/post/{id}', [PostController::class, 'show'])->name('posts.show');
-Route::get('/comments', [CommentController::class, 'index'])->name('comments.index');
+// Public routes
+Route::get('posts', [PostController::class, 'index'])->name('posts.index');
+Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show');
+Route::get('comments', [CommentController::class, 'index'])->name('comments.index');
 
 Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
-    // user's routes
-    Route::get('/users', [UserController::class, 'index'])->name('user.index');
-    Route::get('/profile/{id}', [UserController::class, 'show'])->name('user.show');
-    Route::post('/profile/{id}', [UserController::class, 'update'])->name('user.update');
-    Route::delete('/profile/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+    // User routes
+    Route::get('users', [UserController::class, 'index'])->name('users.index');
+    Route::get('users/{id}', [UserController::class, 'show'])->name('users.show');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-    // post's routes
-    Route::post('/post', [PostController::class, 'store'])->name('post.store');
-    Route::put('/post/{id}', [PostController::class, 'update'])->name('post.update');
-    Route::delete('/post/{id}', [PostController::class, 'destroy'])->name('post.destroy');
+    // Post routes
+    Route::post('posts', [PostController::class, 'store'])->name('posts.store');
+    Route::put('posts/{id}', [PostController::class, 'update'])->name('posts.update');
+    Route::delete('posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
 
-    // comment's routes
-    Route::post('/comment', [CommentController::class, 'store'])->name('comment.store');
-    Route::put('/comment/{id}', [CommentController::class, 'update'])->name('comment.update');
-    Route::delete('/comment/{id}', [CommentController::class, 'destroy'])->name('comment.destroy');
+    // Comment routes
+    Route::post('comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::put('comments/{id}', [CommentController::class, 'update'])->name('comments.update');
+    Route::delete('comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
+    // Admin routes
     Route::middleware('is_admin:admin')->group(function () {
-        // Admin dashboard
-        Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+        // Dashboard
+        Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-        // User management routes
-        Route::get('/admin/users/active', [AdminController::class, 'getAllActiveUsers'])->name('admin.users.active');
-        Route::get('/admin/users/inactive', [AdminController::class, 'getAllInactiveUsers'])->name('admin.users.inactive');
-        Route::put('/admin/users/{id}/activate', [AdminController::class, 'activateUser'])->name('admin.users.activate');
-        Route::put('/admin/users/{id}/deactivate', [AdminController::class, 'deactivateUser'])->name('admin.users.deactivate');
+        // User management
+        Route::get('admin/users/active', [AdminController::class, 'getAllActiveUsers'])->name('admin.users.active');
+        Route::get('admin/users/inactive', [AdminController::class, 'getAllInactiveUsers'])->name('admin.users.inactive');
+        Route::put('admin/users/{id}/activate', [AdminController::class, 'activateUser'])->name('admin.users.activate');
+        Route::put('admin/users/{id}/deactivate', [AdminController::class, 'deactivateUser'])->name('admin.users.deactivate');
 
-        // Post management routes
-        Route::get('/admin/posts/{id}/archive', [AdminController::class, 'getAllArchivePosts'])->name('admin.archive');
-        Route::post('/admin/posts/{id}/archive', [AdminController::class, 'archivePost'])->name('admin.posts.archive');
-        Route::post('/admin/posts/{id}/restore', [AdminController::class, 'restorePost'])->name('admin.posts.restore');
-        Route::delete('/admin/posts/{id}', [AdminController::class, 'deletePost'])->name('admin.posts.delete');
+        // Post management
+        Route::get('admin/posts/archived', [AdminController::class, 'getAllArchivePosts'])->name('admin.posts.archived');
+        Route::put('admin/posts/{id}/archive', [AdminController::class, 'archivePost'])->name('admin.posts.archive');
+        Route::put('admin/posts/{id}/restore', [AdminController::class, 'restorePost'])->name('admin.posts.restore');
+        Route::delete('admin/posts/{id}/force', [AdminController::class, 'deletePost'])->name('admin.posts.force-delete');
     });
 });
