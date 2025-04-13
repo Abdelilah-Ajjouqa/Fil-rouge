@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Posts;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
         try {
-            $user = User::user();
+            $user = Auth::user();
             if (!$user || !$user->getRole('admin')) {
                 return response()->json(['message' => 'Only admin can access to this page'], 403);
             }
@@ -134,7 +135,7 @@ class AdminController extends Controller
     {
         try {
             $post = Posts::findOrFail($id);
-            $user = User::user();
+            $user = Auth::user();
 
             // Admin can only delete archived posts
             if ($user->getRole('admin')) {

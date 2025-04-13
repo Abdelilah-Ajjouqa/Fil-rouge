@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\PostStatusMiddleware;
 use App\Http\Middleware\UserStatusMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -16,7 +17,8 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'is_admin' => AdminMiddleware::class,
-            'userStatus' => UserStatusMiddleware::class
+            'userStatus' => UserStatusMiddleware::class,
+            'postStatus' => PostStatusMiddleware::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

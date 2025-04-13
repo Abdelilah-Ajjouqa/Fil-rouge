@@ -12,9 +12,8 @@ Route::post('register', [AuthController::class, 'register'])->name('auth.registe
 Route::post('login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
-// Public routes
+// Public routes that don't need status checking
 Route::get('posts', [PostController::class, 'index'])->name('posts.index');
-Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::get('comments', [CommentController::class, 'index'])->name('comments.index');
 
 Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
@@ -24,10 +23,15 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     Route::post('users/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
-    // Post routes
+    // Post routes that need status checking
+    Route::middleware('post.status')->group(function () {
+        Route::get('posts/{id}', [PostController::class, 'show'])->name('posts.show');
+        Route::post('posts/{id}', [PostController::class, 'update'])->name('posts.update');
+        Route::delete('posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
+    });
+
+    // Post routes that don't need status checking
     Route::post('posts', [PostController::class, 'store'])->name('posts.store');
-    Route::post('posts/{id}', [PostController::class, 'update'])->name('posts.update');
-    Route::delete('posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
 
     // Comment routes
     Route::post('comments', [CommentController::class, 'store'])->name('comments.store');

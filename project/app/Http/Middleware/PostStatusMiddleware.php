@@ -6,7 +6,7 @@ use Closure;
 use App\Models\Posts;
 use Illuminate\Http\Request;
 
-class CheckPostAccess
+class PostStatusMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
