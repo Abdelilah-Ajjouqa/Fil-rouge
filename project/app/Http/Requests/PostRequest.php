@@ -25,6 +25,8 @@ class PostRequest extends FormRequest
             'title' => 'required|string|max:225',
             'description' => 'nullable|string|max:225',
             'media.*' => 'required|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi,mkv|max:10240',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string|max:50'
         ];
     }
 }

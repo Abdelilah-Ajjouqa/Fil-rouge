@@ -4,28 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
 use App\Models\Posts;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Exception;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        $post = Posts::with('mediaContent')
+        $post = Posts::with('mediaContent', 'tags')
             ->orderBy('created_at', 'desc')
-            // ->pagination(20)
             ->get();
 
         return response()->json($post, 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(PostRequest $request)
     {
         try {
@@ -37,17 +31,14 @@ class PostController extends Controller
                 'user_id' => $request->user()->id,
             ]);
 
-            // check $post
-            if (!$post) {
-                return response()->json(['message' => 'Post not created', 'post' => $post], 400);
+            // Sync Tags
+            if (isset($validate['tags'])) {
+                $this->syncTags($post, $validate['tags']);
             }
 
-            // check if the files are uploaded
+            // Handle Media
             if ($request->hasFile('media')) {
-                $arr = $request->file('media');
-
-                $files = is_array($arr) ? $arr : [$arr]; //make media as an array to use it in the loop
-
+                $files = is_array($request->file('media')) ? $request->file('media') : [$request->file('media')];
                 foreach ($files as $file) {
                     $filePath = $file->store('media', 'public');
                     $post->mediaContent()->create([
@@ -56,48 +47,34 @@ class PostController extends Controller
                         'type' => $file->getClientMimeType(),
                     ]);
                 }
-
-                return response()->json($post->load("mediaContent"), 201);
-            } else {
-                return response()->json(['message' => 'No file uploaded'], 400);
             }
 
-            return response()->json($post->load('mediaContent'), 201);
+            return response()->json($post->load('mediaContent', 'tags'), 201);
         } catch (Exception $e) {
             return response()->json(['message' => $e->getMessage()], 400);
         }
     }
 
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        $search = Posts::findOrFail($id);
-        $post = $search->load('mediaContent');
-
+        $post = Posts::with('mediaContent', 'tags')->findOrFail($id);
         return response()->json($post, 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(PostRequest $request, string $id)
     {
         try {
             $validate = $request->validated();
-
             $post = Posts::findOrFail($id);
 
             if ($request->hasFile('media')) {
-                // Delete old media files
+                // delete old media
                 foreach ($post->mediaContent as $media) {
                     Storage::delete($media->path);
                     $media->delete();
                 }
 
-                // add the media updated
+                // store the new media
                 foreach ($request->file('media') as $file) {
                     $filePath = $file->store('media', 'public');
                     $post->mediaContent()->create([
@@ -107,19 +84,25 @@ class PostController extends Controller
                     ]);
                 }
             }
-
             $post->update($validate);
 
-            return response()->json(["message" => "The post has been updated successfully", "post" => $post->load('mediaContent')], 200);
+            // Sync Tags
+            if (isset($validate['tags'])) {
+                $this->syncTags($post, $validate['tags']);
+            }
+
+            return response()->json([
+                "message" => "The post has been updated successfully",
+                "post" => $post->load('mediaContent', 'tags')
+            ], 200);
         } catch (Exception $e) {
-            return response()->json(["message" => "The update has failed", "error" => $e->getMessage()], 400);
+            return response()->json([
+                "message" => "The update has failed",
+                "error" => $e->getMessage()
+            ], 400);
         }
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $post = Posts::findOrFail($id);
@@ -135,7 +118,6 @@ class PostController extends Controller
 
         return response()->json($media, 200);
     }
-
 
     public function uploadMedia(Request $request, $id)
     {
@@ -160,5 +142,15 @@ class PostController extends Controller
         } catch (Exception $e) {
             return response()->json(['message' => 'No file uploaded', 'error' => $e->getMessage()], 400);
         }
+    }
+
+    private function syncTags(Posts $post, array $tags)
+    {
+        $tagIds = [];
+        foreach ($tags as $tagName) {
+            $tag = Tag::firstOrCreate(['name' => $tagName]);
+            $tagIds[] = $tag->id;
+        }
+        $post->tags()->sync($tagIds);
     }
 }
