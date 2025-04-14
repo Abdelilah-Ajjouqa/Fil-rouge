@@ -17,6 +17,7 @@ class Posts extends Model
         'status'
     ];
 
+    // Post status constants
     const is_public = 'public';
     const is_private = 'private';
     const is_archived = 'archived';
@@ -38,6 +39,6 @@ class Posts extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tags::class);
+        return $this->belongsToMany(Tag::class);
     }
 }
