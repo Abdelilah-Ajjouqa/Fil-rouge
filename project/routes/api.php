@@ -18,7 +18,6 @@ Route::get('posts/{post_id}/comments', [CommentController::class, 'index'])->nam
 
 Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     // User routes
-    // Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::post('users/{id}', [UserController::class, 'update'])->name('users.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('users.destroy');

@@ -144,12 +144,16 @@ class PostController extends Controller
         }
     }
 
-    private function syncTags(Posts $post, array $tags)
+    private function syncTags(Posts $post, string $tagsString)
     {
+        $tagNames = array_map('trim', explode(' ', $tagsString));
+
         $tagIds = [];
-        foreach ($tags as $tagName) {
-            $tag = Tag::firstOrCreate(['name' => $tagName]);
-            $tagIds[] = $tag->id;
+        foreach ($tagNames as $tagName) {
+            if (!empty($tagName)) {
+                $tag = Tag::firstOrCreate(['name' => $tagName]);
+                $tagIds[] = $tag->id;
+            }
         }
         $post->tags()->sync($tagIds);
     }
