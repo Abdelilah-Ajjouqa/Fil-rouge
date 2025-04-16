@@ -67,4 +67,8 @@ class User extends Authenticatable
     {
         return $this->role === $role;
     }
+
+    public function savedPosts(){
+        return $this->hasMany(SavedPost::class);
+    }
 }
