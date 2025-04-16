@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Post;
 use App\Models\Posts;
 use App\Models\SavedPost;
+use App\Models\User;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SavedPostController extends Controller
@@ -21,9 +20,15 @@ class SavedPostController extends Controller
                 'post_id' => $postId
             ]);
 
-            return response()->json(['message' => 'Post saved successfully', 'data' => $savedPost], 201);
+            return response()->json([
+                'message' => 'Post saved successfully',
+                'data' => $savedPost
+            ], 201);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error saving post', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Error saving post',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -38,23 +43,32 @@ class SavedPostController extends Controller
 
             return response()->json(['message' => 'Post unsaved successfully'], 200);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error unsaving post', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Error unsaving post',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
-    public function index()
+    public function getSavedPosts($userId)
     {
         try {
-            $savedPosts = SavedPost::with('post')
-                ->where('user_id', Auth::id())
+            $user = User::findOrFail($userId);
+
+            $savedPosts = SavedPost::with(['post', 'user'])
+                ->where('user_id', $userId)
                 ->latest()
                 ->get();
 
             return response()->json([
-                'data' => $savedPosts
+                'user_id' => $userId,
+                'saved_posts' => $savedPosts
             ], 200);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error retrieving saved posts', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Error retrieving saved posts',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
