@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\SavedPostController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,7 +38,7 @@ Route::middleware(['auth:sanctum', 'userStatus'])->group(function () {
     Route::post('posts/{post_id}/comments/{comment_id}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('posts/{post_id}/comments/{comment_id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
-    Route::get('users/{id}/saved-post', [UserController::class, 'getSavedPosts'])->name('users.saved-posts');
+    Route::get('users/{id}/saved-posts', [SavedPostController::class, 'getSavedPosts'])->name('users.saved-posts');
 
     // Admin routes
     Route::middleware('is_admin:admin')->group(function () {
