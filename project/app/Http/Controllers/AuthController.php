@@ -3,15 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
+    public function showRegisterForm()
+    {
+        return view('auth.register');
+    }
+
     public function register(AuthRequest $request)
     {
         try {
@@ -25,45 +29,45 @@ class AuthController extends Controller
                 'role' => 'user',
             ]);
 
-            return response()->json(["User" => $user], 201);
+            // Auth::login($user); // log in the user right after registration
+            return redirect()->route('posts.index');
         } catch (Exception $e) {
-            return response()->json(["message" => "error", "error" => $e->getMessage()], 500);
+            return back()->withErrors(['message' => 'Something went wrong.', 'error' => $e->getMessage()])->withInput();
         }
+    }
+
+    public function showLoginForm()
+    {
+        return view('auth.login');
     }
 
     public function login(AuthRequest $request)
     {
-        try {
-            $data = $request->validated();
+        $credentials = $request->validated();
 
-            $user = User::where("email", $data['email'])->first();
-
-            if (!$user || !Hash::check($data['password'], $user->password)) {
-                return response()->json(["message" => "Email or Password is incorrect !"], 401);
-            }
-
-            $token = $user->createToken('user_token_' . $user->id)->plainTextToken;
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
 
             if (!$user->is_active) {
-                return response()->json([
-                    'message' => 'Your account has been locked'
-                ], 401);
+                Auth::logout();
+                return back()->withErrors(['email' => 'Your account has been locked.']);
             }
 
-            return response()->json(["message" => "you have login by succesfully", "token" => $token], 200);
-        } catch (Exception $e) {
-            return response()->json(["message" => "error", "error" => $e->getMessage()], 500);
+            $request->session()->regenerate(); // Prevent session fixation
+            return redirect()->intended(route('home'));
         }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ]);
     }
 
     public function logout(Request $request)
     {
-        try {
-            $request->user()->currentAccessToken()->delete(); //delete all tokens
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-            return response()->json(["message" => "you logout"], 200);
-        } catch (Exception $e) {
-            return response()->json(["message" => "error", "error" => $e->getMessage()], 500);
-        }
+        return redirect()->route('auth.login')->with('success', 'Logged out successfully.');
     }
 }

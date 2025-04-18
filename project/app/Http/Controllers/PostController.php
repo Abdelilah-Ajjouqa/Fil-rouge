@@ -17,7 +17,7 @@ class PostController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return response()->json($post, 200);
+        return view('posts.index');
     }
 
     public function store(PostRequest $request)
