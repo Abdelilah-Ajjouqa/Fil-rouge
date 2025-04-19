@@ -10,15 +10,13 @@
 </head>
 
 <body class="bg-white">
-    <nav class="sticky top-0 z-50 bg-white shadow-sm container mx-auto py-3 flex items-center justify-evenly">
+    <nav class="sticky top-0 z-50 bg-white shadow-sm mx-auto py-3 flex items-center justify-evenly">
         <!-- Logo Section -->
         <div class="flex items-center space-x-8">
             <!-- Logo -->
-            <div class="logo w-11 h-11 bg-emerald-400 border rounded-full shadow-lg flex justify-center items-center">
-                <span
-                    class="text-center text-black text-4xl font-normal font-['Rouge_Script'] [text-shadow:_0px_0px_5px_rgb(0_0_0_/_0.55)]">
-                    Y
-                </span>
+            <div class="logo w-10 h-10 rounded-full shadow-lg flex justify-center items-center">
+                <img src="{{ asset('logo pinterest - noir rond.jpeg') }}" alt="Logo"
+                    class="w-full h-full object-cover rounded-full">
             </div>
 
             <!-- Navigation Links -->
@@ -47,7 +45,7 @@
             <div class="relative flex items-center">
                 <i class="ri-search-line absolute left-4 text-gray-500"></i>
                 <input type="text" placeholder="Search"
-                    class="w-full h-12 bg-gray-200 rounded-3xl pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:bg-white" />
+                    class="w-full h-12 bg-gray-200 rounded-3xl pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-black focus:bg-white" />
             </div>
         </div>
 
