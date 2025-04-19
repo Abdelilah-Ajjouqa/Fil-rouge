@@ -1,8 +1,8 @@
-# 📘 Cahier des Charges – Projet YouVed
+# 📘 Cahier des Charges – Projet Pinterest
 
 ## 1. Présentation du projet
 
-**Titre du projet :** Création d'un site web **YouVed**
+**Titre du projet :** Création d'un site web **Pinterest**
 
 **Contexte :**  
 Développement d'une plateforme web permettant aux utilisateurs de consulter et de publier des photos et des vidéos. L’objectif est de proposer une expérience intuitive et attrayante tout en assurant une gestion fluide des contenus multimédias.
