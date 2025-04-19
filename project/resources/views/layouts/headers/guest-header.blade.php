@@ -22,7 +22,7 @@
             <!-- Navigation Links -->
             <div class="hidden md:flex items-center space-x-6">
                 <a href="#"
-                    class="nav-link-active px-5 py-2 text-white flex justify-center items-center bg-neutral-900 rounded-3xl duration-300 hover:drop-shadow-md hover:scale-105 hover:bg-white hover:rounded-3xl hover:text-black">
+                    class="nav-link-active px-5 py-2 text-white flex justify-center items-center bg-neutral-900 rounded-3xl duration-300 hover:drop-shadow-md hover:bg-pink-600">
                     <span class="text-center font-semibold font-['Roboto']">Explore</span>
                 </a>
             </div>
@@ -39,11 +39,11 @@
 
         <!-- Login/Register Buttons -->
         <div class="flex items-center space-x-4">
-            <a href="/login"
+            <a href="{{ route('auth.login.form') }}"
                 class="px-4 py-2 text-black font-semibold rounded-3xl duration-300 hover:bg-gray-100">
                 Log in
             </a>
-            <a href="/register"
+            <a href="{{ route('auth.register.form') }}"
                 class="px-4 py-2 text-white font-semibold bg-neutral-900 rounded-3xl duration-300 hover:bg-neutral-800">
                 Sign up
             </a>
