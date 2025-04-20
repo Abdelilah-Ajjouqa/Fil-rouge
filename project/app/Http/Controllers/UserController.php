@@ -14,27 +14,23 @@ class UserController extends Controller
         $users = User::withCount('posts')->get();
 
         if ($users->isEmpty()) {
-            return response()->json(['message' => 'No users found'], 404);
+            return view('users.index')
+                ->with('warning', 'No users found');
         }
 
-        return response()->json($users, 200);
+        return view('users.index', compact('users'));
     }
 
     public function show(string $userId)
     {
         $user = User::findOrFail($userId);
-
-        // return the user with their posts
         $user->load('posts');
 
-        if ($user->posts->isEmpty()) {
-            return response()->json(['message' => 'No posts found for this user', 'user' => $user], 200);
-        }
-        return response()->json([
+        return view('users.show', [
             'user' => $user,
             'posts' => $user->posts,
-            'posts_count' => $user->posts->count
-        ], 200);
+            'posts_count' => $user->posts->count()
+        ]);
     }
 
     public function update(UserRequest $request, string $id)
@@ -58,15 +54,15 @@ class UserController extends Controller
             }
 
             $user->update($data);
-            return response()->json([
-                "message" => "Profile updated successfully",
-                "user" => $user
-            ], 200);
+
+            return redirect()
+                ->route('users.show', $user->id)
+                ->with('success', 'Profile updated successfully');
         } catch (Exception $e) {
-            return response()->json([
-                'message' => 'User not updated',
-                'error' => $e->getMessage()
-            ], 400);
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to update profile: ' . $e->getMessage());
         }
     }
 
@@ -75,9 +71,14 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->delete();
-            return response()->json(null, 204);
+
+            return redirect()
+                ->route('users.index')
+                ->with('success', 'User deleted successfully');
         } catch (Exception $e) {
-            return response()->json(['message' => 'User not deleted', 'error' => $e->getMessage()], 500);
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to delete user: ' . $e->getMessage());
         }
     }
 }
