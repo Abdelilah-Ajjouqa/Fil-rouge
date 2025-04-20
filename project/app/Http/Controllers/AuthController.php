@@ -54,7 +54,7 @@ class AuthController extends Controller
             }
 
             $request->session()->regenerate(); // Prevent session fixation
-            return redirect()->intended(route('home'));
+            return redirect()->route('posts.index');
         }
 
         return back()->withErrors([
@@ -68,6 +68,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('auth.login')->with('success', 'Logged out successfully.');
+        return redirect()->route('auth.login.form');
     }
 }

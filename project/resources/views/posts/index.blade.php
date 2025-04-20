@@ -7,6 +7,13 @@
     <title>Document</title>
 </head>
 <body>
-    this is posts.index page
+    this is posts.index page <br><br>
+
+    <a href="{{ route('auth.register.form') }}">register</a><br>
+    <a href="{{ route('auth.login.form') }}">login</a>
+    
+    {{-- <form action="{{ route('auth.logout') }}" method="POST">
+        <button type="submit">Logout</button>
+    </form> --}}
 </body>
 </html>
