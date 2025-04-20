@@ -17,12 +17,16 @@ class UserStatusMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            return response()->json(["message" => "You need to login first !"], 401);
+            return redirect()
+                ->route('auth.login.form')
+                ->with('error', 'You need to login first');
         }
 
         if (!$request->user()->is_active) {
             Auth::logout();
-            return response()->json(["message" => "Your account has been locked"], 401);
+            return redirect()
+                ->route('auth.login.form')
+                ->with('error', 'Your account has been deactived');
         }
 
         return $next($request);

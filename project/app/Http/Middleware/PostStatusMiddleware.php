@@ -10,7 +10,7 @@ class PostStatusMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
-        $postId = $request->route('id'); // Assuming the route parameter is 'id'
+        $postId = $request->route('id');
         $post = Posts::findOrFail($postId);
         $user = $request->user();
 
@@ -22,16 +22,22 @@ class PostStatusMiddleware
                 if ($user && ($user->id === $post->user_id)) {
                     return $next($request);
                 }
-                return response()->json(['message' => 'Unauthorized access'], 403);
+                return redirect()
+                    ->route('posts.index')
+                    ->with('error', 'You do not have access to view this post');
 
             case Posts::is_archived:
                 if ($user && $user->getRole('admin')) {
                     return $next($request);
                 }
-                return response()->json(['message' => 'Post is archived'], 403);
+                return redirect()
+                    ->route('posts.index')
+                    ->with('error', 'This post has been archived');
 
             default:
-                return response()->json(['message' => 'Invalid post status'], 400);
+                return redirect()
+                    ->route('posts.index')
+                    ->with('error', 'Invalid post status');
         }
     }
 }

@@ -18,11 +18,15 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next, String $role)
     {
         if (!Auth::check()) {
-            return response()->json(["message" => "error", "error" => "You need to login first."], 401);
+            return redirect()
+                ->route('auth.login.form')
+                ->with('error', 'Ypu need to login first');
         }
 
         if (!$request->user()->getRole($role)) {
-            return response()->json(["message" => "errro", "error" => "You don't have acces to this page !"], 403);
+            return redirect()
+                ->route('posts.index')
+                ->with('error', 'you don\t have access to this page');
         }
 
         return $next($request);
