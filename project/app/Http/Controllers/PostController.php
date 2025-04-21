@@ -17,7 +17,12 @@ class PostController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('posts.index');
+        return view('posts.index', compact('post'));
+    }
+
+    public function create()
+    {
+        return view('posts.create');
     }
 
     public function store(PostRequest $request)
@@ -49,16 +54,26 @@ class PostController extends Controller
                 }
             }
 
-            return response()->json($post->load('mediaContent', 'tags'), 201);
+            return redirect()
+                ->route('posts.index')
+                ->with('success', 'Post created successfully!');
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 400);
+            return redirect()
+                ->back()
+                ->withErrors(['error' => $e->getMessage()]);
         }
     }
 
     public function show(string $id)
     {
         $post = Posts::with('mediaContent', 'tags')->findOrFail($id);
-        return response()->json($post, 200);
+        return view('posts.show', compact('post'));
+    }
+
+    public function edit(string $id)
+    {
+        $post = Posts::with('mediaContent', 'tags')->findOrFail($id);
+        return view('posts.edit', compact('post'));
     }
 
     public function update(PostRequest $request, string $id)
@@ -75,7 +90,8 @@ class PostController extends Controller
                 }
 
                 // store the new media
-                foreach ($request->file('media') as $file) {
+                $files = is_array($request->file('media')) ? $request->file('media') : [$request->file('media')];
+                foreach ($files as $file) {
                     $filePath = $file->store('media', 'public');
                     $post->mediaContent()->create([
                         'user_id' => $post->user_id,
@@ -84,6 +100,7 @@ class PostController extends Controller
                     ]);
                 }
             }
+
             $post->update($validate);
 
             // Sync Tags
@@ -91,32 +108,40 @@ class PostController extends Controller
                 $this->syncTags($post, $validate['tags']);
             }
 
-            return response()->json([
-                "message" => "The post has been updated successfully",
-                "post" => $post->load('mediaContent', 'tags')
-            ], 200);
+            return redirect()
+                ->route('posts.show', $post->id)
+                ->with('success', 'Post updated successfully.');
         } catch (Exception $e) {
-            return response()->json([
-                "message" => "The update has failed",
-                "error" => $e->getMessage()
-            ], 400);
+            return redirect()
+                ->back()
+                ->withErrors(['error' => 'Update failed: ' . $e->getMessage()]);
         }
     }
+
 
     public function destroy(string $id)
     {
         $post = Posts::findOrFail($id);
+
+        foreach ($post->mediaContent as $media) {
+            Storage::disk('public')->delete($media->path);
+            $media->delete();
+        }
         $post->delete();
 
-        return response()->json(null, 204);
+        return redirect()
+            ->route('posts.index')
+            ->with('success', 'Post deleted successfully.');
     }
+
 
     public function getMedia(string $id)
     {
         $post = Posts::findOrFail($id);
         $media = $post->mediaContent;
 
-        return response()->json($media, 200);
+        return redirect()->route('posts.show', $post->id)
+            ->with('success', 'Media loaded successfully!');
     }
 
     public function uploadMedia(Request $request, $id)
@@ -131,18 +156,22 @@ class PostController extends Controller
             if ($request->hasFile('media')) {
                 $filePath = $request->file('media')->store('media', 'public');
 
-                $media = $post->mediaContent()->create([
+                $post->mediaContent()->create([
                     'user_id' => $post->user_id,
                     'path' => $filePath,
                     'type' => $request->file('media')->getClientMimeType(),
                 ]);
 
-                return response()->json($media, 200);
+                return redirect()
+                    ->route('posts.show', $post->id);
             }
         } catch (Exception $e) {
-            return response()->json(['message' => 'No file uploaded', 'error' => $e->getMessage()], 400);
+            return redirect()
+                ->back()
+                ->withErrors(['error' => $e->getMessage()]);
         }
     }
+
 
     private function syncTags(Posts $post, string $tagsString)
     {
