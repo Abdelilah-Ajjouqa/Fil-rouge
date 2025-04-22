@@ -30,9 +30,6 @@ class AuthController extends Controller
             ]);
 
             Auth::login($user); // log in the user right after registration
-            if ($user->role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
             return redirect()->route('posts.index');
         } catch (Exception $e) {
             return back()->withErrors(['register_error' => 'Something went wrong: ' . $e->getMessage()]);
@@ -57,6 +54,9 @@ class AuthController extends Controller
             }
 
             $request->session()->regenerate(); // Prevent session fixation
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
             return redirect()->route('posts.index');
         }
 

@@ -34,7 +34,7 @@ class Posts extends Model
 
     public function mediaContent()
     {
-        return $this->hasMany(Media::class);
+        return $this->hasMany(Media::class, 'post_id');
     }
 
     public function tags()
@@ -43,6 +43,6 @@ class Posts extends Model
     }
 
     public function SavedPosts(){
-        return $this->belongsTo(SavedPost::class);
+        return $this->hasMany(SavedPost::class, 'post_id');
     }
 }
