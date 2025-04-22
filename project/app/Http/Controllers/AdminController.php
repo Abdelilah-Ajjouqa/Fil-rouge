@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Comments;
 use App\Models\Posts;
 use App\Models\User;
@@ -16,13 +15,12 @@ class AdminController extends Controller
         try {
             $user = Auth::user();
             if (!$user || !$user->getRole('admin')) {
-                return response()->json(['message' => 'Only admin can access to this page'], 403);
+                return redirect()->back()->with('error', 'You cannot access this page.');
             }
 
-            // Admin dashboard logic goes here
-            return response()->json(["message" => "this is admin's dashboard"], 200);
+            return view('admin.dashboard', compact('user'));
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error', 'error' => $e->getMessage()], 500);
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
@@ -31,13 +29,9 @@ class AdminController extends Controller
         try {
             $users = User::where('is_active', true)->get();
 
-            if ($users->isEmpty()) {
-                return response()->json(['message' => 'No active users found'], 404);
-            }
-
-            return response()->json($users, 200);
+            return view('admin.users.active', compact('users'));
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error', 'error' => $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error fetching active users: ' . $e->getMessage());
         }
     }
 
@@ -46,13 +40,9 @@ class AdminController extends Controller
         try {
             $users = User::where('is_active', false)->get();
 
-            if ($users->isEmpty()) {
-                return response()->json(['message' => 'No inactive users found'], 404);
-            }
-
-            return response()->json($users, 200);
+            return view('admin.users.inactive', compact('users'));
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error', 'error' => $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error fetching inactive users: ' . $e->getMessage());
         }
     }
 
@@ -63,9 +53,9 @@ class AdminController extends Controller
             $user->is_active = true;
             $user->save();
 
-            return response()->json(['message' => 'User activated successfully'], 200);
+            return redirect()->back()->with('success', 'User activated successfully.');
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error activating user', 'error' => $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error activating user: ' . $e->getMessage());
         }
     }
 
@@ -76,9 +66,9 @@ class AdminController extends Controller
             $user->is_active = false;
             $user->save();
 
-            return response()->json(['message' => 'User desactivated successfully'], 200);
+            return redirect()->back()->with('success', 'User deactivated successfully.');
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error', 'error' => $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error deactivating user: ' . $e->getMessage());
         }
     }
 
@@ -89,12 +79,9 @@ class AdminController extends Controller
             $post->status = Posts::is_archived;
             $post->save();
 
-            return response()->json([
-                'message' => 'Post archived successfully',
-                'post' => $post
-            ], 200);
+            return redirect()->back()->with('success', 'Post archived successfully.');
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error archiving post', 'error' => $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error archiving post: ' . $e->getMessage());
         }
     }
 
@@ -103,13 +90,9 @@ class AdminController extends Controller
         try {
             $posts = Posts::where('status', Posts::is_archived)->get();
 
-            if ($posts->isEmpty()) {
-                return response()->json(['message' => 'No archived posts found'], 200);
-            }
-
-            return response()->json($posts, 200);
+            return view('admin.posts.archived', compact('posts'));
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error', 'error' => $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error fetching archived posts: ' . $e->getMessage());
         }
     }
 
@@ -118,18 +101,15 @@ class AdminController extends Controller
         try {
             $post = Posts::findOrFail($id);
             if ($post->status !== Posts::is_archived) {
-                return response()->json(['message' => 'Post is not archived'], 400);
+                return redirect()->back()->with('error', 'Post is not archived.');
             }
 
             $post->status = Posts::is_public;
             $post->save();
 
-            return response()->json([
-                'message' => 'Post restored successfully',
-                'post' => $post
-            ], 200);
+            return redirect()->back()->with('success', 'Post restored successfully.');
         } catch (Exception $e) {
-            return response()->json(['message' => 'Error restoring post', 'error' => $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error restoring post: ' . $e->getMessage());
         }
     }
 
@@ -139,37 +119,35 @@ class AdminController extends Controller
             $post = Posts::findOrFail($id);
             $user = Auth::user();
 
-            // Admin can only delete archived posts
             if ($user->getRole('admin')) {
                 if ($post->status !== Posts::is_archived) {
-                    return response()->json(['message' => 'Admin can only delete archived posts'], 400);
+                    return redirect()->back()->with('error', 'Admin can only delete archived posts.');
                 }
-            }
-            // Regular users can delete their own posts
-            else if ($post->user_id !== $user->id) {
-                return response()->json(['message' => 'Unauthorized to delete this post'], 403);
+            } else if ($post->user_id !== $user->id) {
+                return redirect()->back()->with('error', 'Unauthorized to delete this post.');
             }
 
             $post->delete();
-            return response()->json(['message' => 'Post deleted successfully'], 200);
+            return redirect()->back()->with('success', 'Post deleted successfully.');
         } catch (Exception $e) {
-            return response()->json(["message" => "Error", "error" => $e->getMessage()], 500);
+            return redirect()->back()->with('error', 'Error deleting post: ' . $e->getMessage());
         }
     }
 
-    public function deleteComment($id){
+    public function deleteComment($id)
+    {
         try {
             $comment = Comments::findOrFail($id);
             $user = Auth::user();
 
-            if (!$user->getRole('admin')){
-                return response()->json(['message' => "Only admin who can do this action"], 403);
+            if (!$user->getRole('admin')) {
+                return redirect()->back()->with('error', 'Only admin can perform this action.');
             }
 
             $comment->delete();
-            return response()->json(['message' => 'Comment deleted by successfuly', 200]);
-        } catch (Exception $e){
-            return response()->json(['message' => 'error', 'error' => $e->getMessage()], 500);
+            return redirect()->back()->with('success', 'Comment deleted successfully.');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Error deleting comment: ' . $e->getMessage());
         }
     }
 }

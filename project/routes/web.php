@@ -19,7 +19,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->n
 
 // Public routes
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
-Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
+// Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post_id}/comments', [CommentController::class, 'index'])->name('comments.index');
 
 
