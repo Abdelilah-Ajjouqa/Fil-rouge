@@ -14,7 +14,7 @@ class AdminController extends Controller
     {
         try {
             $user = Auth::user();
-            if (!$user || !$user->getRole('admin')) {
+            if (!$user || !$user->role !== 'admin') {
                 return redirect()->back()->with('error', 'You cannot access this page.');
             }
 
@@ -119,7 +119,7 @@ class AdminController extends Controller
             $post = Posts::findOrFail($id);
             $user = Auth::user();
 
-            if ($user->getRole('admin')) {
+            if ($user->role == 'admin') {
                 if ($post->status !== Posts::is_archived) {
                     return redirect()->back()->with('error', 'Admin can only delete archived posts.');
                 }
@@ -140,7 +140,7 @@ class AdminController extends Controller
             $comment = Comments::findOrFail($id);
             $user = Auth::user();
 
-            if (!$user->getRole('admin')) {
+            if ($user->role !== 'admin') {
                 return redirect()->back()->with('error', 'Only admin can perform this action.');
             }
 

@@ -15,20 +15,14 @@ class SavedPostController extends Controller
         try {
             $post = Posts::findOrFail($postId);
 
-            $savedPost = SavedPost::create([
+            SavedPost::create([
                 'user_id' => Auth::id(),
                 'post_id' => $postId
             ]);
 
-            return response()->json([
-                'message' => 'Post saved successfully',
-                'data' => $savedPost
-            ], 201);
+            return redirect()->back()->with('success', 'Post saved successfully.');
         } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Error saving post',
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->back()->with('error', 'Error saving post: ' . $e->getMessage());
         }
     }
 
@@ -41,12 +35,9 @@ class SavedPostController extends Controller
 
             $savedPost->delete();
 
-            return response()->json(['message' => 'Post unsaved successfully'], 200);
+            return redirect()->back()->with('success', 'Post unsaved successfully.');
         } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Error unsaving post',
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->back()->with('error', 'Error unsaving post: ' . $e->getMessage());
         }
     }
 
@@ -60,15 +51,9 @@ class SavedPostController extends Controller
                 ->latest()
                 ->get();
 
-            return response()->json([
-                'user_id' => $userId,
-                'saved_posts' => $savedPosts
-            ], 200);
+            return view('saved-posts.index', compact('savedPosts', 'user'));
         } catch (Exception $e) {
-            return response()->json([
-                'message' => 'Error retrieving saved posts',
-                'error' => $e->getMessage()
-            ], 500);
+            return redirect()->back()->with('error', 'Error retrieving saved posts: ' . $e->getMessage());
         }
     }
 }
