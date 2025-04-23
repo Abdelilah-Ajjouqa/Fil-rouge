@@ -125,7 +125,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white py-6">
+    {{-- <footer class="bg-white py-6">
         <div class="container mx-auto px-4">
             <div class="flex flex-col md:flex-row justify-between items-center">
                 <div class="mb-4 md:mb-0">
@@ -144,7 +144,7 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer> --}}
 
     @yield('scripts')
 </body>
