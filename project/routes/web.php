@@ -31,6 +31,7 @@ Route::middleware(['auth', 'userStatus'])->group(function () {
     Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 
     // Post routes (without needing postStatus)
+    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
 
     // Post routes that need postStatus

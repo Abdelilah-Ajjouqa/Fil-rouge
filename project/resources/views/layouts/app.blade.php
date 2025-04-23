@@ -107,6 +107,14 @@
         </div>
     </nav>
 
+    
+    <div class="fixed bottom-6 right-6">
+        <a href="{{ route('posts.create') }}" class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-full shadow-lg flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            Create Post
+        </a>
+    </div>
+
     <!-- Main Content -->
     <main class="container mx-auto px-4 pt-20 pb-10">
         @if (session('success'))
