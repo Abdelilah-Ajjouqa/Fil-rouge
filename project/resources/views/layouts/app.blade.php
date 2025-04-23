@@ -52,15 +52,15 @@
     <!-- Navigation -->
     <nav class="bg-white shadow-md py-4 fixed w-full z-10">
         <div class="container mx-auto px-4 flex justify-between items-center">
-            <a href="{{ route('posts.index') }}" class="text-red-600 font-bold text-2xl">
-                <i class="fab fa-pinterest text-red-600 mr-2"></i>
+            <a href="{{ route('posts.index') }}" class="text-black font-bold text-2xl">
+                <i class="fab fa-pinterest text-black mr-2"></i>
                 PinClone
             </a>
 
             <div class="hidden md:block flex-grow mx-4">
                 <div class="relative">
                     <input type="text" placeholder="Search"
-                        class="w-full bg-gray-100 rounded-full py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-red-500">
+                        class="w-full bg-gray-100 rounded-full py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-700">
                     <i class="fas fa-search absolute left-3 top-3 text-gray-500"></i>
                 </div>
             </div>
@@ -101,7 +101,7 @@
                     <a href="{{ route('auth.login.form') }}"
                         class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-full">Log in</a>
                     <a href="{{ route('auth.register.form') }}"
-                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">Sign up</a>
+                        class="bg-black hover:bg-blue-500 text-white font-semibold py-2 px-4 rounded-full">Sign up</a>
                 @endauth
             </div>
         </div>
@@ -132,13 +132,13 @@
                     <p class="text-gray-600">&copy; {{ date('Y') }} PinClone. All rights reserved.</p>
                 </div>
                 <div class="flex space-x-4">
-                    <a href="#" class="text-gray-600 hover:text-red-600">
+                    <a href="#" class="text-gray-600 hover:text-black">
                         <i class="fab fa-facebook"></i>
                     </a>
-                    <a href="#" class="text-gray-600 hover:text-red-600">
+                    <a href="#" class="text-gray-600 hover:text-black">
                         <i class="fab fa-twitter"></i>
                     </a>
-                    <a href="#" class="text-gray-600 hover:text-red-600">
+                    <a href="#" class="text-gray-600 hover:text-black">
                         <i class="fab fa-instagram"></i>
                     </a>
                 </div>
