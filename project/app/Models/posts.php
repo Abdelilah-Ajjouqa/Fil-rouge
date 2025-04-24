@@ -42,7 +42,7 @@ class Posts extends Model
         return $this->belongsToMany(Tag::class, 'post_tag', 'post_id', 'tag_id');
     }
 
-    public function SavedPosts()
+    public function savedPosts()
     {
         return $this->hasMany(SavedPost::class, 'post_id');
     }

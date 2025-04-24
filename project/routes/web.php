@@ -49,6 +49,7 @@ Route::middleware(['auth', 'userStatus'])->group(function () {
 
     // Saved posts
     Route::get('/users/{id}/saved-posts', [SavedPostController::class, 'getSavedPosts'])->name('users.saved-posts');
+    Route::post('/posts/{post_id}/save', [SavedPostController::class, 'save'])->name('save');
 
     // Admin-only routes
     Route::middleware('is_admin:admin')->prefix('admin')->name('admin.')->group(function () {

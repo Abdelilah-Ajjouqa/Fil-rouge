@@ -40,7 +40,7 @@
 
                             <div class="flex space-x-2">
                                 @auth
-                                    <form action="{{ route('users.saved-posts', Auth::id()) }}" method="POST" class="inline">
+                                    <form action="{{ route('save', ['post_id' => $item->id]) }}" method="POST" class="inline">
                                         @csrf
                                         <button type="submit"
                                             class="text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">

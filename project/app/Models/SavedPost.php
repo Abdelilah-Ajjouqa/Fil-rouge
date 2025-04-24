@@ -16,6 +16,6 @@ class SavedPost extends Model
     }
 
     public function post(){
-        return $this->belongsTo(Posts::class);
+        return $this->belongsTo(Posts::class, 'post_id');
     }
 }
