@@ -5,7 +5,7 @@
 @section('content')
     <div class="max-w-5xl mx-auto">
         <!-- Cover Image -->
-        <div class="relative h-64 rounded-lg overflow-hidden mb-6">
+        <div class="relative h-64 rounded-lg mb-6">
             @if ($user->cover)
                 <img src="{{ asset($user->cover) }}" alt="Cover" class="w-full h-full object-cover">
             @else
@@ -29,15 +29,11 @@
         <!-- User Info -->
         <div class="text-center mt-16 mb-8">
             <h1 class="text-2xl font-bold">{{ $user->first_name }} {{ $user->last_name }}</h1>
-            <p class="text-gray-600">"@"{{ $user->username }}</p>
-
-            @if ($user->bio)
-                <p class="mt-2 max-w-lg mx-auto">{{ $user->bio }}</p>
-            @endif
+            <p class="text-gray-600">{{ $user->username }}</p>
 
             <div class="flex justify-center mt-4 space-x-2">
                 @if (Auth::check() && Auth::id() == $user->id)
-                    <a href="{{ route('users.show', $user->id) }}"
+                    <a href="{{ route('users.edit', $user->id) }}"
                         class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-full">
                         <i class="fas fa-edit mr-1"></i> Edit Profile
                     </a>
