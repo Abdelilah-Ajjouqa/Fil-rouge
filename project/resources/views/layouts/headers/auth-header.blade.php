@@ -65,7 +65,7 @@
             <div class="relative">
                 <div
                     class="w-9 h-9 rounded-full overflow-hidden bg-gray-200 duration-300 hover:scale-105 hover:drop-shadow-md">
-                    <img class="w-full h-full object-cover" src="https://placehold.co/36x36" alt="User profile" />
+                    <img class="w-full h-full object-cover" src="https://placehold.co36x36" alt="User profile" />
                 </div>
             </div>
         </div>

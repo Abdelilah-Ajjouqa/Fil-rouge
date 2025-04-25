@@ -79,7 +79,7 @@
                     </a>
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" class="flex items-center focus:outline-none">
-                            <img src="{{ Auth::user()->avatar ?? 'https://via.placeholder.com/40' }}" alt="Profile"
+                            <img src="{{ Auth::user()->avatar ?? 'https://placehold.co/40' }}" alt="Profile"
                                 class="w-8 h-8 rounded-full">
                         </button>
                         <div x-show="open" @click.away="open = false"
