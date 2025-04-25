@@ -22,11 +22,12 @@
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex space-x-2">
                         @auth
-                            <form action="{{ route('users.saved-posts', Auth::id()) }}" method="POST" class="inline">
+                            <form action="{{ route('save', ['post_id'=>$post->id]) }}" method="POST" class="inline">
                                 @csrf
                                 <button type="submit"
                                     class="bg-red-100 hover:bg-red-200 text-red-600 font-medium py-2 px-4 rounded-full">
                                     <i class="far fa-bookmark mr-1"></i> Save
+                                    {{-- <i class="far fa-solid fa-bookmark  mr-1"></i> Save --}}
                                 </button>
                             </form>
                         @endauth
@@ -71,7 +72,7 @@
 
                 <div class="flex items-center mb-6">
                     <a href="{{ route('users.show', $post->user_id) }}" class="flex items-center">
-                        <img src="{{ $post->user->avatar ?? 'https://via.placeholder.com/40' }}" alt="User"
+                        <img src="{{ $post->user->avatar ?? 'https://placehold.co/40' }}" alt="User"
                             class="w-10 h-10 rounded-full mr-3">
                         <div>
                             <h3 class="font-semibold">{{ $post->user->username }}</h3>
@@ -108,7 +109,7 @@
                         <form action="{{ route('comments.store', $post->id) }}" method="POST" class="mb-6">
                             @csrf
                             <div class="flex">
-                                <img src="{{ Auth::user()->avatar ?? 'https://via.placeholder.com/40' }}" alt="User"
+                                <img src="{{ Auth::user()->avatar ?? 'https://placehold.co/40' }}" alt="User"
                                     class="w-8 h-8 rounded-full mr-2">
                                 <input type="text" name="content" placeholder="Add a comment"
                                     class="flex-grow border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
@@ -129,7 +130,7 @@
                     <div class="space-y-4 max-h-64 overflow-y-auto">
                         @forelse($post->comments ?? [] as $comment)
                             <div class="flex">
-                                <img src="{{ $comment->user->avatar ?? 'https://via.placeholder.com/40' }}" alt="User"
+                                <img src="{{ $comment->user->avatar ?? 'https://placehold.co/40' }}" alt="User"
                                     class="w-8 h-8 rounded-full mr-2">
                                 <div class="bg-gray-100 rounded-2xl px-4 py-2 flex-grow">
                                     <div class="flex justify-between items-start">
@@ -188,7 +189,7 @@
 
                             <div class="flex items-center justify-between mt-3">
                                 <div class="flex items-center">
-                                    <img src="https://via.placeholder.com/40" alt="User"
+                                    <img src="https://placehold.co/40" alt="User"
                                         class="w-8 h-8 rounded-full mr-2">
                                     <span class="text-sm font-medium">Username</span>
                                 </div>
@@ -205,13 +206,4 @@
             @endfor
         </div>
     </div>
-@endsection
-
-@section('scripts')
-    <script>
-        // For image gallery if multiple images
-        // document.addEventListener('DOMContentLoaded', function() {
-        //     // Add any JavaScript for image gallery here
-        // });
-    </script>
 @endsection

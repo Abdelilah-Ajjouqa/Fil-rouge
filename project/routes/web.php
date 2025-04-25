@@ -38,7 +38,8 @@ Route::middleware(['auth', 'userStatus'])->group(function () {
     // Post routes that need postStatus
     Route::middleware('postStatus')->group(function () {
         Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
-        Route::post('/posts/{id}', [PostController::class, 'update'])->name('posts.update');
+        Route::get('/posts/{id}/edit', [PostController::class, 'edit'])->name('posts.edit');
+        Route::post('/posts/{id}/update', [PostController::class, 'update'])->name('posts.update');
         Route::delete('/posts/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
     });
 
