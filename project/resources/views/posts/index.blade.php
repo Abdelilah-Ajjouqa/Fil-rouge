@@ -31,11 +31,11 @@
                         <p class="text-gray-600 text-sm line-clamp-2 mt-1">{{ $item->description }}</p>
 
                         <div class="flex items-center justify-between mt-3">
-                            <div class="flex items-center">
+                            <a href="{{ route('users.show', $item->user_id) }}" class="flex items-center ">
                                 <img src="{{ $item->user->avatar ?? 'https://placehold.co/40' }}" alt="User"
                                     class="w-8 h-8 rounded-full mr-2">
                                 <span class="text-sm font-medium">{{ $item->user->username }}</span>
-                            </div>
+                            </a>
 
                             <div class="flex space-x-2">
                                 @auth
