@@ -16,7 +16,7 @@
     <div class="masonry-grid">
         @forelse($post as $item)
             <div class="masonry-item">
-                <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl hover:opacity-85 transition-shadow duration-300">
                     <a href="{{ route('posts.show', $item->id) }}" class="block">
                         @if ($item->mediaContent->isNotEmpty())
                             <img src="{{ asset('storage/' . $item->mediaContent->first()->path) }}"
@@ -26,18 +26,18 @@
                             </div>
                         @endif
                     </a>
-                    <div class="p-4">
-                        <h3 class="font-semibold text-lg truncate">{{ $item->title }}</h3>
-                        <p class="text-gray-600 text-sm line-clamp-2 mt-1">{{ $item->description }}</p>
+                    <div class="p-2">
+                        <h3 class="font-semibold text-lg truncate cursor-pointer">{{ $item->title }}</h3>
+                        <p class="text-gray-600 text-sm line-clamp-2 mt-0.5 cursor-pointer">{{ $item->description }}</p>
 
-                        <div class="flex items-center justify-between mt-3">
-                            <a href="{{ route('users.show', $item->user_id) }}" class="flex items-center ">
+                        <div class="flex items-center justify-between mt-2">
+                            <a href="{{ route('users.show', $item->user_id) }}" class="flex items-center duration-300 hover:drop-shadow-2xl hover:text-red-500">
                                 <img src="{{ $item->user->avatar ?? 'https://placehold.co/40' }}" alt="User"
                                     class="w-8 h-8 rounded-full mr-2">
                                 <span class="text-sm font-medium">{{ $item->user->username }}</span>
                             </a>
 
-                            <div class="flex space-x-2">
+                            <div class="flex gap-x-1">
                                 @auth
                                     <form action="{{ route('save', ['post_id' => $item->id]) }}" method="POST" class="inline">
                                         @csrf

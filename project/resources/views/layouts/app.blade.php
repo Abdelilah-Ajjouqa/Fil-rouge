@@ -48,7 +48,7 @@
     @yield('styles')
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-white min-h-screen">
     <!-- Navigation -->
     <nav class="bg-white shadow-md py-4 fixed w-full z-10">
         <div class="container mx-auto px-4 flex justify-between items-center">
