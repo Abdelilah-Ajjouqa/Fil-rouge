@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Models\Posts;
+use App\Models\SavedPost;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
@@ -21,16 +23,16 @@ class UserController extends Controller
         return view('users.index', compact('users'));
     }
 
-    public function show(string $userId)
+    public function show(string $id)
     {
-        $user = User::findOrFail($userId);
-        $user->load('posts');
+        $user = User::findOrFail($id);
+        $posts = Posts::where('user_id', $id)
+            ->get();
+        $savedPosts = SavedPost::with(['post.mediaContent', 'post.user'])
+            ->where('user_id', $id)
+            ->get();
 
-        return view('users.show', [
-            'user' => $user,
-            'posts' => $user->posts,
-            'posts_count' => $user->posts->count()
-        ]);
+        return view('users.show', compact('user', 'posts', 'savedPosts'));
     }
 
     public function edit($id)

@@ -29,7 +29,11 @@
         <!-- User Info -->
         <div class="text-center mt-16 mb-8">
             <h1 class="text-2xl font-bold">{{ $user->first_name }} {{ $user->last_name }}</h1>
-            <p class="text-gray-600">{{ $user->username }}</p>
+            <p class="text-gray-600">@{{ $user - > username }}</p>
+
+            @if ($user->bio)
+                <p class="mt-2 max-w-lg mx-auto">{{ $user->bio }}</p>
+            @endif
 
             <div class="flex justify-center mt-4 space-x-2">
                 @if (Auth::check() && Auth::id() == $user->id)
@@ -52,17 +56,17 @@
         <!-- Tabs -->
         <div class="border-b mb-6">
             <div class="flex justify-center">
-                <button class="px-4 py-2 border-b-2 border-red-600 text-red-600 font-medium">
+                <button id="created-tab" class="px-4 py-2 border-b-2 border-red-600 text-red-600 font-medium">
                     Created
                 </button>
-                <button class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800">
+                <button id="saved-tab" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800">
                     Saved
                 </button>
             </div>
         </div>
 
-        <!-- Pins Grid -->
-        <div class="masonry-grid">
+        <!-- Created Pins Grid -->
+        <div id="created-pins" class="masonry-grid">
             @forelse($posts as $post)
                 <div class="masonry-item">
                     <div
@@ -99,5 +103,99 @@
                 </div>
             @endforelse
         </div>
+
+        <!-- Saved Pins -->
+        <div id="saved-pins" class="masonry-grid hidden">
+            @forelse($savedPosts as $savedPost)
+                <div class="masonry-item">
+                    <div
+                        class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                        <a href="{{ route('posts.show', $savedPost->post->id) }}" class="block">
+                            @if ($savedPost->post->mediaContent->isNotEmpty())
+                                <img src="{{ asset('storage/' . $savedPost->post->mediaContent->first()->path) }}"
+                                    alt="{{ $savedPost->post->title }}" class="w-full object-cover"
+                                    style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};">
+                            @else
+                                <div class="bg-gray-200 w-full"
+                                    style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};"></div>
+                            @endif
+                        </a>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg truncate">{{ $savedPost->post->title }}</h3>
+                            <p class="text-gray-600 text-sm line-clamp-2 mt-1">{{ $savedPost->post->description }}</p>
+
+                            <div class="flex items-center justify-between mt-3">
+                                <div class="flex items-center">
+                                    <img src="{{ $savedPost->post->user->avatar ?? 'https://via.placeholder.com/40' }}"
+                                        alt="User" class="w-8 h-8 rounded-full mr-2">
+                                    <span class="text-sm font-medium">{{ $savedPost->post->user->username }}</span>
+                                </div>
+
+                                <div class="flex space-x-2">
+                                    @if (Auth::check() && Auth::id() == $user->id)
+                                        <form action="{{ route('users.saved-posts', $user->id) }}" method="POST"
+                                            class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <input type="hidden" name="post_id" value="{{ $savedPost->post->id }}">
+                                            <button type="submit"
+                                                class="text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">
+                                                <i class="fas fa-bookmark"></i>
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @empty
+                <div class="col-span-full text-center py-10">
+                    <div class="text-gray-500 mb-4">
+                        <i class="fas fa-bookmark text-5xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">No saved pins yet</h3>
+                    <p class="text-gray-600 mb-4">Save pins to find them later</p>
+                    <a href="{{ route('posts.index') }}"
+                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
+                        Discover ideas
+                    </a>
+                </div>
+            @endforelse
+        </div>
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const createdTab = document.getElementById('created-tab');
+            const savedTab = document.getElementById('saved-tab');
+            const createdPins = document.getElementById('created-pins');
+            const savedPins = document.getElementById('saved-pins');
+
+            function switchTab(activeTab, inactiveTab, activeContent, inactiveContent) {
+                activeTab.classList.add('border-red-600', 'text-red-600');
+                activeTab.classList.remove('border-transparent', 'text-gray-600');
+
+                inactiveTab.classList.add('border-transparent', 'text-gray-600');
+                inactiveTab.classList.remove('border-red-600', 'text-red-600');
+
+                activeContent.classList.remove('hidden');
+                inactiveContent.classList.add('hidden');
+            }
+
+            // Set up click handlers
+            createdTab.addEventListener('click', function() {
+                switchTab(createdTab, savedTab, createdPins, savedPins);
+            });
+
+            savedTab.addEventListener('click', function() {
+                switchTab(savedTab, createdTab, savedPins, createdPins);
+            });
+
+            // Initialize with created tab active (default state)
+            switchTab(createdTab, savedTab, createdPins, savedPins);
+        });
+    </script>
 @endsection
