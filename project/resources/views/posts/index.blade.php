@@ -20,8 +20,7 @@
                     <a href="{{ route('posts.show', $item->id) }}" class="block">
                         @if ($item->mediaContent->isNotEmpty())
                             <img src="{{ asset('storage/' . $item->mediaContent->first()->path) }}"
-                                alt="{{ $item->title }}" class="w-full object-cover"
-                                style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};">
+                                alt="{{ $item->title }}" class="w-full object-cover">
                         @else
                             <div class="bg-gray-200 w-full" style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};">
                             </div>

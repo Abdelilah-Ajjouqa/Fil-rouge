@@ -47,18 +47,15 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $data = $request->validated();
 
-            // Handle avatar upload
-            if ($request->hasFile('avatar')) {
-                $avatarName = time() . '_' . $request->file('avatar')->getClientOriginalName();
-                $request->file('avatar')->storeAs('public/avatars', $avatarName);
-                $data['avatar'] = 'storage/avatars/' . $avatarName;
+
+            if ($request->hasFile('avatar')){
+                $avatarPath = '/storage/' . $request->file('avatar')->store('avatars');
+                $data['avatar'] = $avatarPath;
             }
 
-            // Handle cover upload
-            if ($request->hasFile('cover')) {
-                $coverName = time() . '_' . $request->file('cover')->getClientOriginalName();
-                $request->file('cover')->storeAs('public/covers', $coverName);
-                $data['cover'] = 'storage/covers/' . $coverName;
+            if ($request->hasFile('cover')){
+                $coverPath = '/storage/' . $request->file('cover')->store('covers');
+                $data['cover'] = $coverPath;
             }
 
             $user->update($data);

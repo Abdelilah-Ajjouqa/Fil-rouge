@@ -16,7 +16,7 @@
             <div class="absolute left-1/2 bottom-0 transform -translate-x-1/2 translate-y-1/2">
                 <div class="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white">
                     @if ($user->avatar)
-                        <img src="{{ asset($user->avatar) }}" alt="{{ $user->username }}" class="w-full h-full object-cover">
+                        <img src="{{ $user->avatar }}" alt="{{ $user->username }}" class="w-full h-full object-cover">
                     @else
                         <div class="w-full h-full bg-gray-200 flex items-center justify-center">
                             <i class="fas fa-user text-gray-400 text-4xl"></i>
@@ -29,11 +29,11 @@
         <!-- User Info -->
         <div class="text-center mt-16 mb-8">
             <h1 class="text-2xl font-bold">{{ $user->first_name }} {{ $user->last_name }}</h1>
-            <p class="text-gray-600">@{{ $user - > username }}</p>
+            <span class="flex justify-center text-gray-600">
+                <p>@</p>
+                <p>{{ $user->username }}</p>
+            </span>
 
-            @if ($user->bio)
-                <p class="mt-2 max-w-lg mx-auto">{{ $user->bio }}</p>
-            @endif
 
             <div class="flex justify-center mt-4 space-x-2">
                 @if (Auth::check() && Auth::id() == $user->id)
