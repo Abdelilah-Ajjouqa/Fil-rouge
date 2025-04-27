@@ -16,15 +16,12 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('auth.login
 Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('auth.logout');
 
-
 // Public routes
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
 // Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post_id}/comments', [CommentController::class, 'index'])->name('comments.index');
 
-
 Route::middleware(['auth', 'userStatus'])->group(function () {
-
     // User routes
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
@@ -49,8 +46,8 @@ Route::middleware(['auth', 'userStatus'])->group(function () {
     Route::delete('/posts/{post_id}/comments/{comment_id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     // Saved posts
-    Route::get('/users/{id}/saved-posts', [SavedPostController::class, 'getSavedPosts'])->name('users.saved-posts');
-    Route::post('/posts/{post_id}/save', [SavedPostController::class, 'save'])->name('save');
+    Route::post('/save/{postId}', [SavedPostController::class, 'save'])->name('save');
+    Route::post('/unsave/{postId}', [SavedPostController::class, 'unsave'])->name('unsave');
 
     // Admin-only routes
     Route::middleware('is_admin:admin')->prefix('admin')->name('admin.')->group(function () {

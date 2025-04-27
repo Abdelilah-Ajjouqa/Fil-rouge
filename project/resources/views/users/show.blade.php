@@ -133,10 +133,10 @@
 
                                 <div class="flex space-x-2">
                                     @if (Auth::check() && Auth::id() == $user->id)
-                                        <form action="{{ route('users.saved-posts', $user->id) }}" method="POST"
+                                        <form action="{{ route('unsave', $user->id) }}" method="POST"
                                             class="inline">
                                             @csrf
-                                            @method('DELETE')
+                                            @method('POST')
                                             <input type="hidden" name="post_id" value="{{ $savedPost->post->id }}">
                                             <button type="submit"
                                                 class="text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">

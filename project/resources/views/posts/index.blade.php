@@ -16,7 +16,8 @@
     <div class="masonry-grid">
         @forelse($post as $item)
             <div class="masonry-item">
-                <div class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl hover:opacity-85 transition-shadow duration-300">
+                <div
+                    class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl hover:opacity-85 transition-shadow duration-300">
                     <a href="{{ route('posts.show', $item->id) }}" class="block">
                         @if ($item->mediaContent->isNotEmpty())
                             <img src="{{ asset('storage/' . $item->mediaContent->first()->path) }}"
@@ -31,7 +32,8 @@
                         <p class="text-gray-600 text-sm line-clamp-2 mt-0.5 cursor-pointer">{{ $item->description }}</p>
 
                         <div class="flex items-center justify-between mt-2">
-                            <a href="{{ route('users.show', $item->user_id) }}" class="flex items-center duration-300 hover:drop-shadow-2xl hover:text-red-500">
+                            <a href="{{ route('users.show', $item->user_id) }}"
+                                class="flex items-center duration-300 hover:drop-shadow-2xl hover:text-red-500">
                                 <img src="{{ $item->user->avatar ?? 'https://placehold.co/40' }}" alt="User"
                                     class="w-8 h-8 rounded-full mr-2">
                                 <span class="text-sm font-medium">{{ $item->user->username }}</span>
@@ -39,13 +41,17 @@
 
                             <div class="flex gap-x-1">
                                 @auth
-                                    <form action="{{ route('save', ['post_id' => $item->id]) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit"
-                                            class="text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">
-                                            <i class="far fa-bookmark"></i>
-                                        </button>
-                                    </form>
+                                    @php
+                                        // Check if the post is saved by the current user
+                                        $isSaved = \App\Models\SavedPost::where('user_id', Auth::id())
+                                            ->where('post_id', $item->id)
+                                            ->exists();
+                                    @endphp
+                                    <button
+                                        class="bookmark-btn text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100"
+                                        data-post-id="{{ $item->id }}" data-saved="{{ $isSaved ? 'true' : 'false' }}">
+                                        <i class="{{ $isSaved ? 'fas' : 'far' }} fa-bookmark"></i>
+                                    </button>
                                     <button class="text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">
                                         <i class="fas fa-ellipsis-h"></i>
                                     </button>
@@ -76,4 +82,53 @@
             </div>
         @endforelse
     </div>
+@endsection
+
+@section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all bookmark buttons
+            const bookmarkButtons = document.querySelectorAll('.bookmark-btn');
+
+            // Add click event listener to each button
+            bookmarkButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const postId = this.getAttribute('data-post-id');
+                    const isSaved = this.getAttribute('data-saved') === 'true';
+                    const bookmarkIcon = this.querySelector('i');
+                    const button = this;
+
+                    // Create a fetch request to save/unsave the post
+                    fetch(isSaved ? `/unsave/${postId}` : `/save/${postId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            credentials: 'same-origin'
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Toggle the bookmark icon
+                                if (isSaved) {
+                                    bookmarkIcon.classList.remove('fas');
+                                    bookmarkIcon.classList.add('far');
+                                    button.setAttribute('data-saved', 'false');
+                                } else {
+                                    bookmarkIcon.classList.remove('far');
+                                    bookmarkIcon.classList.add('fas');
+                                    button.setAttribute('data-saved', 'true');
+                                }
+                                return response.json();
+                            }
+                            throw new Error('Network response was not ok');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            });
+        });
+    </script>
 @endsection
