@@ -46,8 +46,8 @@ Route::middleware(['auth', 'userStatus'])->group(function () {
     Route::delete('/posts/{post_id}/comments/{comment_id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     // Saved posts
-    Route::post('/save/{postId}', [SavedPostController::class, 'save'])->name('save');
-    Route::post('/unsave/{postId}', [SavedPostController::class, 'unsave'])->name('unsave');
+    Route::post('/save/{post_id}', [SavedPostController::class, 'save'])->name('save');
+    Route::post('/unsave/{post_id}', [SavedPostController::class, 'unsave'])->name('unsave');
 
     // Admin-only routes
     Route::middleware('is_admin:admin')->prefix('admin')->name('admin.')->group(function () {

@@ -65,25 +65,23 @@
             </div>
         </div>
 
-        <!-- Created Pins Grid -->
-        <div id="created-pins" class="masonry-grid">
-            @forelse($posts as $post)
+        <!-- Created posts Grid -->
+        <div id="created-posts" class="masonry-grid">
+            @forelse($posts as $item)
                 <div class="masonry-item">
                     <div
                         class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
-                        <a href="{{ route('posts.show', $post->id) }}" class="block">
-                            @if ($post->mediaContent->isNotEmpty())
-                                <img src="{{ asset('storage/' . $post->mediaContent->first()->path) }}"
-                                    alt="{{ $post->title }}" class="w-full object-cover"
-                                    style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};">
+                        <a href="{{ route('posts.show', $item->id) }}" class="block">
+                            @if ($item->mediaContent->isNotEmpty())
+                                <img src="{{ asset('storage/' . $item->mediaContent->first()->path) }}"
+                                    alt="{{ $item->title }}" class="w-full object-cover">
                             @else
-                                <div class="bg-gray-200 w-full"
-                                    style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};"></div>
+                                <div class="bg-gray-200 w-full"></div>
                             @endif
                         </a>
                         <div class="p-4">
-                            <h3 class="font-semibold text-lg truncate">{{ $post->title }}</h3>
-                            <p class="text-gray-600 text-sm line-clamp-2 mt-1">{{ $post->description }}</p>
+                            <h3 class="font-semibold text-lg truncate">{{ $item->title }}</h3>
+                            <p class="text-gray-600 text-sm line-clamp-2 mt-1">{{ $item->description }}</p>
                         </div>
                     </div>
                 </div>
@@ -92,7 +90,7 @@
                     <div class="text-gray-500 mb-4">
                         <i class="fas fa-image text-5xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">No pins yet</h3>
+                    <h3 class="text-xl font-semibold mb-2">No posts yet</h3>
                     @if (Auth::check() && Auth::id() == $user->id)
                         <p class="text-gray-600 mb-4">Share your ideas with the world!</p>
                         <a href="{{ route('posts.create') }}"
@@ -104,8 +102,8 @@
             @endforelse
         </div>
 
-        <!-- Saved Pins -->
-        <div id="saved-pins" class="masonry-grid hidden">
+        <!-- Saved posts -->
+        <div id="saved-posts" class="masonry-grid hidden">
             @forelse($savedPosts as $savedPost)
                 <div class="masonry-item">
                     <div
@@ -113,11 +111,9 @@
                         <a href="{{ route('posts.show', $savedPost->post->id) }}" class="block">
                             @if ($savedPost->post->mediaContent->isNotEmpty())
                                 <img src="{{ asset('storage/' . $savedPost->post->mediaContent->first()->path) }}"
-                                    alt="{{ $savedPost->post->title }}" class="w-full object-cover"
-                                    style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};">
+                                    alt="{{ $savedPost->post->title }}" class="w-full object-cover">
                             @else
-                                <div class="bg-gray-200 w-full"
-                                    style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};"></div>
+                                <div class="bg-gray-200 w-full"></div>
                             @endif
                         </a>
                         <div class="p-4">
@@ -133,16 +129,12 @@
 
                                 <div class="flex space-x-2">
                                     @if (Auth::check() && Auth::id() == $user->id)
-                                        <form action="{{ route('unsave', $user->id) }}" method="POST"
-                                            class="inline">
-                                            @csrf
-                                            @method('POST')
-                                            <input type="hidden" name="post_id" value="{{ $savedPost->post->id }}">
-                                            <button type="submit"
-                                                class="text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">
-                                                <i class="fas fa-bookmark"></i>
-                                            </button>
-                                        </form>
+                                        <!-- Replace the existing form with this button -->
+                                        <button type="button"
+                                            class="unsave-btn text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100"
+                                            data-post-id="{{ $savedPost->post->id }}">
+                                            <i class="fas fa-bookmark"></i>
+                                        </button>
                                     @endif
                                 </div>
                             </div>
@@ -154,8 +146,8 @@
                     <div class="text-gray-500 mb-4">
                         <i class="fas fa-bookmark text-5xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">No saved pins yet</h3>
-                    <p class="text-gray-600 mb-4">Save pins to find them later</p>
+                    <h3 class="text-xl font-semibold mb-2">No saved posts yet</h3>
+                    <p class="text-gray-600 mb-4">Save posts to find them later</p>
                     <a href="{{ route('posts.index') }}"
                         class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
                         Discover ideas
@@ -171,8 +163,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const createdTab = document.getElementById('created-tab');
             const savedTab = document.getElementById('saved-tab');
-            const createdPins = document.getElementById('created-pins');
-            const savedPins = document.getElementById('saved-pins');
+            const createdposts = document.getElementById('created-posts');
+            const savedposts = document.getElementById('saved-posts');
 
             function switchTab(activeTab, inactiveTab, activeContent, inactiveContent) {
                 activeTab.classList.add('border-red-600', 'text-red-600');
@@ -187,15 +179,61 @@
 
             // Set up click handlers
             createdTab.addEventListener('click', function() {
-                switchTab(createdTab, savedTab, createdPins, savedPins);
+                switchTab(createdTab, savedTab, createdposts, savedposts);
             });
 
             savedTab.addEventListener('click', function() {
-                switchTab(savedTab, createdTab, savedPins, createdPins);
+                switchTab(savedTab, createdTab, savedposts, createdposts);
             });
 
             // Initialize with created tab active (default state)
-            switchTab(createdTab, savedTab, createdPins, savedPins);
+            switchTab(createdTab, savedTab, createdposts, savedposts);
+
+            // Add unsave functionality
+            document.querySelectorAll('.unsave-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const postId = this.getAttribute('data-post-id');
+                    const postElement = this.closest('.masonry-item');
+
+                    fetch(`/unsave/${postId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').getAttribute('content')
+                            },
+                            credentials: 'same-origin'
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                // Remove the post from the saved posts grid
+                                postElement.remove();
+
+                                // Check if there are no more saved posts
+                                const savedpostsGrid = document.getElementById('saved-posts');
+                                if (savedpostsGrid.querySelectorAll('.masonry-item').length === 0) {
+                                    savedpostsGrid.innerHTML = `
+                                    <div class="col-span-full text-center py-10">
+                                        <div class="text-gray-500 mb-4">
+                                            <i class="fas fa-bookmark text-5xl"></i>
+                                        </div>
+                                        <h3 class="text-xl font-semibold mb-2">No saved posts yet</h3>
+                                        <p class="text-gray-600 mb-4">Save posts to find them later</p>
+                                        <a href="${window.location.origin}/posts" 
+                                            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
+                                            Discover ideas
+                                        </a>
+                                    </div>`;
+                                }
+                            } else {
+                                throw new Error('Failed to unsave post');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                });
+            });
         });
     </script>
 @endsection

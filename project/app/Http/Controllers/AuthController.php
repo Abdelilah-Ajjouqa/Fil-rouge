@@ -29,7 +29,7 @@ class AuthController extends Controller
                 'role' => 'user',
             ]);
 
-            Auth::login($user); // log in the user right after registration
+            Auth::login($user);
             return redirect()->route('posts.index');
         } catch (Exception $e) {
             return back()->withErrors(['register_error' => 'Something went wrong: ' . $e->getMessage()]);
