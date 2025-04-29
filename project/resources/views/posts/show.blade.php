@@ -22,14 +22,19 @@
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex space-x-2">
                         @auth
-                            <form action="{{ route('save', ['post_id'=>$post->id]) }}" method="POST" class="inline">
-                                @csrf
-                                <button type="submit"
-                                    class="bg-red-100 hover:bg-red-200 text-red-600 font-medium py-2 px-4 rounded-full">
-                                    <i class="far fa-bookmark mr-1"></i> Save
-                                    {{-- <i class="far fa-solid fa-bookmark  mr-1"></i> Save --}}
-                                </button>
-                            </form>
+                            @php
+                                // Check if the post is saved
+                                $isSaved = \App\Models\SavedPost::where('user_id', Auth::id())
+                                    ->where('post_id', $post->id)
+                                    ->exists();
+                            @endphp
+                            <button type="button"
+                                class="save-btn bg-red-100 hover:bg-red-200 text-red-600 font-medium py-2 px-4 rounded-full"
+                                data-post-id="{{ $post->id }}" 
+                                data-saved="{{ $isSaved ? 'true' : 'false' }}">
+                                <i class="bookmark-icon {{ $isSaved ? 'fas' : 'far' }} fa-bookmark mr-1"></i> 
+                                <span class="bookmark-text">{{ $isSaved ? 'Saved' : 'Save' }}</span>
+                            </button>
                         @endauth
                     </div>
 
@@ -189,8 +194,7 @@
 
                             <div class="flex items-center justify-between mt-3">
                                 <div class="flex items-center">
-                                    <img src="https://placehold.co/40" alt="User"
-                                        class="w-8 h-8 rounded-full mr-2">
+                                    <img src="https://placehold.co/40" alt="User" class="w-8 h-8 rounded-full mr-2">
                                     <span class="text-sm font-medium">Username</span>
                                 </div>
 
@@ -206,4 +210,8 @@
             @endfor
         </div>
     </div>
+@endsection
+
+@section('scripts')
+    @include('components.ajax');
 @endsection

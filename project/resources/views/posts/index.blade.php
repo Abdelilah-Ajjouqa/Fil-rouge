@@ -48,8 +48,8 @@
                                             ->exists();
                                     @endphp
                                     <button
-                                        class="bookmark-btn text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100"
-                                        data-post-id="{{ $item->id }}" data-saved="{{ $isSaved ? 'true' : 'false' }}">
+                                        class="unsave-btn text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100"
+                                        data-post-id="{{ $item->id }}">
                                         <i class="{{ $isSaved ? 'fas' : 'far' }} fa-bookmark"></i>
                                     </button>
                                     <button class="text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">
@@ -85,50 +85,5 @@
 @endsection
 
 @section('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get all bookmark buttons
-            const bookmarkButtons = document.querySelectorAll('.bookmark-btn');
-
-            // Add click event listener to each button
-            bookmarkButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const postId = this.getAttribute('data-post-id');
-                    const isSaved = this.getAttribute('data-saved') === 'true';
-                    const bookmarkIcon = this.querySelector('i');
-                    const button = this;
-
-                    // Create a fetch request to save/unsave the post
-                    fetch(isSaved ? `/unsave/${postId}` : `/save/${postId}`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector(
-                                    'meta[name="csrf-token"]').getAttribute('content')
-                            },
-                            credentials: 'same-origin'
-                        })
-                        .then(response => {
-                            if (response.ok) {
-                                // Toggle the bookmark icon
-                                if (isSaved) {
-                                    bookmarkIcon.classList.remove('fas');
-                                    bookmarkIcon.classList.add('far');
-                                    button.setAttribute('data-saved', 'false');
-                                } else {
-                                    bookmarkIcon.classList.remove('far');
-                                    bookmarkIcon.classList.add('fas');
-                                    button.setAttribute('data-saved', 'true');
-                                }
-                                return response.json();
-                            }
-                            throw new Error('Network response was not ok');
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                });
-            });
-        });
-    </script>
+    @include('components.save')
 @endsection
