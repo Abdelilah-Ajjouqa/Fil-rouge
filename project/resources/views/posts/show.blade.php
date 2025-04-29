@@ -30,9 +30,8 @@
                             @endphp
                             <button type="button"
                                 class="save-btn bg-red-100 hover:bg-red-200 text-red-600 font-medium py-2 px-4 rounded-full"
-                                data-post-id="{{ $post->id }}" 
-                                data-saved="{{ $isSaved ? 'true' : 'false' }}">
-                                <i class="bookmark-icon {{ $isSaved ? 'fas' : 'far' }} fa-bookmark mr-1"></i> 
+                                data-post-id="{{ $post->id }}" data-saved="{{ $isSaved ? 'true' : 'false' }}">
+                                <i class="bookmark-icon {{ $isSaved ? 'fas' : 'far' }} fa-bookmark mr-1"></i>
                                 <span class="bookmark-text">{{ $isSaved ? 'Saved' : 'Save' }}</span>
                             </button>
                         @endauth
@@ -135,11 +134,15 @@
                     <div class="space-y-4 max-h-64 overflow-y-auto">
                         @forelse($post->comments ?? [] as $comment)
                             <div class="flex">
-                                <img src="{{ $comment->user->avatar ?? 'https://placehold.co/40' }}" alt="User"
-                                    class="w-8 h-8 rounded-full mr-2">
+                                <a href="{{ route('users.show', $comment->user_id) }}">
+                                    <img src="{{ $comment->user->avatar ?? 'https://placehold.co/40' }}" alt="User"
+                                        class="w-8 h-8 rounded-full mr-2">
+                                </a>
                                 <div class="bg-gray-100 rounded-2xl px-4 py-2 flex-grow">
                                     <div class="flex justify-between items-start">
-                                        <h4 class="font-semibold text-sm">{{ $comment->user->username }}</h4>
+                                        <a href="{{ route('users.show', $comment->user_id) }}"
+                                            class="font-semibold text-sm">{{ $comment->user->username }}</a>
+                                        {{-- for the time ago --}}
                                         <span
                                             class="text-xs text-gray-500">{{ $comment->created_at->diffForHumans() }}</span>
                                     </div>
