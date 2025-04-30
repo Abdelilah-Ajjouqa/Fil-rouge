@@ -17,15 +17,10 @@
         @forelse($post as $item)
             <div class="masonry-item">
                 <div
-                    class="bg-gray-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl hover:opacity-85 transition-shadow duration-300">
-                    <a href="{{ route('posts.show', $item->id) }}" class="block">
-                        @if ($item->mediaContent->isNotEmpty())
-                            <img src="{{ asset('storage/' . $item->mediaContent->first()->path) }}"
-                                alt="{{ $item->title }}" class="w-full object-cover">
-                        @else
-                            <div class="bg-gray-200 w-full" style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};">
-                            </div>
-                        @endif
+                    class="bg-gray-50 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                    <a href="{{ route('posts.show', $item->id) }}" class="block hover:opacity-85 overflow-hidden rounded-t-lg">
+                        <img src="{{ asset('storage/' . $item->mediaContent->first()->path) }}" alt="{{ $item->title }}"
+                            class="w-full object-cover">
                     </a>
                     <div class="p-2">
                         <h3 class="font-semibold text-lg truncate cursor-pointer">{{ $item->title }}</h3>
@@ -42,7 +37,7 @@
                             <div class="flex gap-x-1">
                                 @auth
                                     @php
-                                        // Check if the post is saved by the current user
+                                        // Check if the post is already saved
                                         $isSaved = \App\Models\SavedPost::where('user_id', Auth::id())
                                             ->where('post_id', $item->id)
                                             ->exists();
@@ -52,9 +47,38 @@
                                         data-post-id="{{ $item->id }}">
                                         <i class="{{ $isSaved ? 'fas' : 'far' }} fa-bookmark"></i>
                                     </button>
-                                    <button class="text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">
-                                        <i class="fas fa-ellipsis-h"></i>
-                                    </button>
+                                    <div class="relative" x-data="{ open: false }">
+                                        <button @click="open = !open"
+                                            class="text-gray-600 hover:text-red-600 p-1 rounded-full hover:bg-gray-100">
+                                            <i class="fas fa-ellipsis-h"></i>
+                                        </button>
+                                        <div x-show="open" @click.away="open = false"
+                                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                                            @if (Auth::id() == $item->user_id || Auth::user()->role == 'admin')
+                                                <a href="{{ route('posts.edit', $item->id) }}"
+                                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                                    <i class="fas fa-edit mr-2"></i> Edit Pin
+                                                </a>
+                                                <form action="{{ route('posts.destroy', $item->id) }}" method="POST"
+                                                    onsubmit="return confirm('Are you sure you want to delete this pin?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
+                                                        <i class="fas fa-trash-alt mr-2"></i> Delete Pin
+                                                    </button>
+                                                </form>
+                                            @endif
+                                            <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                                <i class="fas fa-share-alt mr-2"></i> Share
+                                            </a>
+                                            <a href="{{ asset('storage/' . $item->mediaContent->first()->path) }}"
+                                                download="{{ $item->title }}"
+                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                                <i class="fas fa-download mr-2"></i> Download
+                                            </a>
+                                        </div>
+                                    </div>
                                 @endauth
                             </div>
                         </div>
