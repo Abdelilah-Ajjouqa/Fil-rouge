@@ -26,7 +26,7 @@
                         <i class="fas fa-thumbtack text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="text-gray-500 text-sm">Total Pins</h3>
+                        <h3 class="text-gray-500 text-sm">Total posts</h3>
                         <p class="text-2xl font-semibold">{{ \App\Models\Posts::count() }}</p>
                     </div>
                 </div>
@@ -62,7 +62,7 @@
                 <a href="{{ route('admin.posts.archived') }}"
                     class="bg-gray-100 hover:bg-gray-200 p-4 rounded-lg text-center">
                     <i class="fas fa-archive text-yellow-600 text-2xl mb-2"></i>
-                    <p>Archived Pins</p>
+                    <p>Archived posts</p>
                 </a>
                 <a href="{{ route('admin.users.index') }}" class="bg-gray-100 hover:bg-gray-200 p-4 rounded-lg text-center">
                     <i class="fas fa-users-cog text-blue-600 text-2xl mb-2"></i>
@@ -110,7 +110,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                New Pin: "Summer Vacation Ideas"
+                                New post: "Summer Vacation Ideas"
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 5 minutes ago
@@ -136,7 +136,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                On Pin: "DIY Home Decor"
+                                On post: "DIY Home Decor"
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 10 minutes ago
@@ -162,7 +162,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                Pin: "Outdated Content"
+                                post: "Outdated Content"
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 30 minutes ago

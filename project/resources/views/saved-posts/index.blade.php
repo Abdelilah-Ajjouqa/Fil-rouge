@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Saved Pins')
+@section('title', 'Saved posts')
 
 @section('content')
     <div class="max-w-5xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">Saved Pins</h1>
+            <h1 class="text-2xl font-bold">Saved posts</h1>
 
             @if (Auth::check() && Auth::id() == $user->id)
                 <a href="{{ route('users.show', $user->id) }}" class="text-red-600 hover:underline">
@@ -63,8 +63,8 @@
                     <div class="text-gray-500 mb-4">
                         <i class="fas fa-bookmark text-5xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">No saved pins yet</h3>
-                    <p class="text-gray-600 mb-4">Save pins to find them later</p>
+                    <h3 class="text-xl font-semibold mb-2">No saved posts yet</h3>
+                    <p class="text-gray-600 mb-4">Save posts to find them later</p>
                     <a href="{{ route('posts.index') }}"
                         class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
                         Discover ideas

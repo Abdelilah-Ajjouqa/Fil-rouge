@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Create Pin')
+@section('title', 'Create post')
 
 @section('content')
     <div class="max-w-4xl mx-auto">
         <div class="bg-white rounded-xl shadow-lg overflow-hidden">
             <div class="p-6">
-                <h1 class="text-2xl font-bold mb-6">Create Pin</h1>
+                <h1 class="text-2xl font-bold mb-6">Create post</h1>
 
                 <form action="{{ route('posts.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
@@ -37,7 +37,7 @@
                             </div>
                         </div>
 
-                        <!-- Right Column - Pin Details -->
+                        <!-- Right Column - post Details -->
                         <div>
                             <div class="mb-4">
                                 <label for="title" class="block text-gray-700 font-medium mb-2">Title</label>
@@ -76,7 +76,7 @@
                                 </a>
                                 <button type="submit"
                                     class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-full">
-                                    Create Pin
+                                    Create post
                                 </button>
                             </div>
                         </div>

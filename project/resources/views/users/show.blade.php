@@ -95,7 +95,7 @@
                         <p class="text-gray-600 mb-4">Share your ideas with the world!</p>
                         <a href="{{ route('posts.create') }}"
                             class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
-                            Create Pin
+                            Create post
                         </a>
                     @endif
                 </div>

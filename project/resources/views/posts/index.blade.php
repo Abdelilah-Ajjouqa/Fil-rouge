@@ -16,7 +16,7 @@
                 @auth
                     <a href="{{ route('posts.create') }}"
                         class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full flex items-center">
-                        <i class="fas fa-plus mr-2"></i> Create Pin
+                        <i class="fas fa-plus mr-2"></i> Create post
                     </a>
                 @endauth
             </div>
@@ -65,15 +65,15 @@
                                                     @if (Auth::id() == $item->user_id || Auth::user()->role == 'admin')
                                                         <a href="{{ route('posts.edit', $item->id) }}"
                                                             class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                                                            <i class="fas fa-edit mr-2"></i> Edit Pin
+                                                            <i class="fas fa-edit mr-2"></i> Edit post
                                                         </a>
                                                         <form action="{{ route('posts.destroy', $item->id) }}" method="POST"
-                                                            onsubmit="return confirm('Are you sure you want to delete this pin?');">
+                                                            onsubmit="return confirm('Are you sure you want to delete this post?');">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit"
                                                                 class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
-                                                                <i class="fas fa-trash-alt mr-2"></i> Delete Pin
+                                                                <i class="fas fa-trash-alt mr-2"></i> Delete post
                                                             </button>
                                                         </form>
                                                     @endif
@@ -98,17 +98,17 @@
                         <div class="text-gray-500 mb-4">
                             <i class="fas fa-image text-5xl"></i>
                         </div>
-                        <h3 class="text-xl font-semibold mb-2">No pins found</h3>
-                        <p class="text-gray-600">Be the first to create a pin!</p>
+                        <h3 class="text-xl font-semibold mb-2">No posts found</h3>
+                        <p class="text-gray-600">Be the first to create a post!</p>
                         @auth
                             <a href="{{ route('posts.create') }}"
                                 class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
-                                Create Pin
+                                Create post
                             </a>
                         @else
                             <a href="{{ route('auth.login.form') }}"
                                 class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
-                                Log in to create pins
+                                Log in to create posts
                             </a>
                         @endauth
                     </div>

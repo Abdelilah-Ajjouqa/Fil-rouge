@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('title', 'Archived Pins')
+@section('title', 'Archived posts')
 
 @section('content')
     <div class="max-w-7xl mx-auto">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">Archived Pins</h1>
+            <h1 class="text-2xl font-bold">Archived posts</h1>
             <a href="{{ route('admin.dashboard') }}"
                 class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg flex items-center">
                 <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
@@ -18,10 +18,10 @@
                     <div class="p-2 rounded-full bg-yellow-100 text-yellow-600 mr-3">
                         <i class="fas fa-archive"></i>
                     </div>
-                    <h2 class="text-xl font-semibold">Archived Pins ({{ count($posts) }})</h2>
+                    <h2 class="text-xl font-semibold">Archived posts ({{ count($posts) }})</h2>
                 </div>
                 <div class="relative">
-                    <input type="text" id="postSearch" placeholder="Search pins..."
+                    <input type="text" id="postSearch" placeholder="Search posts..."
                         class="border rounded-lg px-4 py-2 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-500">
                     <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
                 </div>
@@ -87,7 +87,7 @@
                                         @csrf
                                         @method('POST')
                                         <button type="submit" class="text-green-600 hover:text-green-900"
-                                            onclick="return confirm('Are you sure you want to restore this pin?')">
+                                            onclick="return confirm('Are you sure you want to restore this post?')">
                                             <i class="fas fa-undo"></i>
                                         </button>
                                     </form>
@@ -96,7 +96,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:text-red-900"
-                                            onclick="return confirm('Are you sure you want to permanently delete this pin? This action cannot be undone.')">
+                                            onclick="return confirm('Are you sure you want to permanently delete this post? This action cannot be undone.')">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>
@@ -107,7 +107,7 @@
                 @empty
                     <div class="col-span-3 py-8 text-center text-gray-500">
                         <i class="fas fa-archive text-4xl mb-3"></i>
-                        <p>No archived pins found</p>
+                        <p>No archived posts found</p>
                     </div>
                 @endforelse
             </div>
