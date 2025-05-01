@@ -14,7 +14,7 @@ class AdminController extends Controller
     {
         try {
             $user = Auth::user();
-            if (!$user || !$user->role !== 'admin') {
+            if (!$user || $user->role !== 'admin') {
                 return redirect()->back()->with('error', 'You cannot access this page.');
             }
 
