@@ -92,22 +92,48 @@
         document.addEventListener('DOMContentLoaded', function() {
             const mediaInput = document.getElementById('media');
             const preview = document.getElementById('preview');
-            const imagePreview = document.getElementById('image-preview');
             const uploadPrompt = document.getElementById('upload-prompt');
 
             // Handle file selection
             mediaInput.addEventListener('change', function() {
-                if (this.files && this.files[0]) {
-                    const file = this.files[0];
-                    const reader = new FileReader();
+                if (this.files && this.files.length > 0) {
+                    // Clear previous previews
+                    preview.innerHTML = '';
 
-                    reader.onload = function(e) {
-                        imagePreview.src = e.target.result;
-                        preview.classList.remove('hidden');
-                        uploadPrompt.classList.add('hidden');
-                    }
+                    // Create a container for previews
+                    const previewContainer = document.createElement('div');
+                    previewContainer.className = 'grid grid-cols-2 gap-2';
+                    preview.appendChild(previewContainer);
 
-                    reader.readAsDataURL(file);
+                    // Show preview area and hide upload prompt
+                    preview.classList.remove('hidden');
+                    uploadPrompt.classList.add('hidden');
+
+                    // Process each file
+                    Array.from(this.files).forEach(file => {
+                        const reader = new FileReader();
+
+                        reader.onload = function(e) {
+                            const previewItem = document.createElement('div');
+                            previewItem.className = 'relative';
+
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.className = 'h-40 w-full object-cover rounded';
+                            img.alt = 'Preview';
+
+                            previewItem.appendChild(img);
+                            previewContainer.appendChild(previewItem);
+                        }
+
+                        reader.readAsDataURL(file);
+                    });
+
+                    // Add file count indicator
+                    const fileCount = document.createElement('p');
+                    fileCount.className = 'text-gray-600 text-sm mt-2';
+                    fileCount.textContent = `${this.files.length} file(s) selected`;
+                    preview.appendChild(fileCount);
                 }
             });
         });

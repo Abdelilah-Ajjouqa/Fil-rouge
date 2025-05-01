@@ -5,14 +5,45 @@
 @section('content')
     <div class="bg-white rounded-xl shadow-lg overflow-hidden max-w-6xl mx-auto">
         <div class="flex flex-col md:flex-row">
-            <!-- Left side - Image -->
-            <div class="md:w-3/5 bg-black flex items-center justify-center">
-                @if ($post->mediaContent->isNotEmpty())
-                    <img src="{{ asset('storage/' . $post->mediaContent->first()->path) }}" alt="{{ $post->title }}"
-                        class="w-full h-auto max-h-[80vh] object-contain">
-                @else
-                    <div class="bg-gray-200 w-full h-96 flex items-center justify-center">
-                        <i class="fas fa-image text-gray-400 text-5xl"></i>
+            <!-- Left side - Image with Pagination -->
+            <div class="md:w-3/5 bg-black flex flex-col relative">
+                <div class="flex-grow flex items-center justify-center">
+                    @if ($post->mediaContent->isNotEmpty())
+                        @foreach ($post->mediaContent as $index => $media)
+                            <div id="media-{{ $index }}"
+                                class="media-item w-full h-full flex items-center justify-center {{ $index > 0 ? 'hidden' : '' }}">
+                                <img src="{{ asset('storage/' . $media->path) }}"
+                                    alt="{{ $post->title }} - Image {{ $index + 1 }}"
+                                    class="w-full h-auto max-h-[80vh] object-contain">
+                            </div>
+                        @endforeach
+                    @else
+                        <div class="bg-gray-200 w-full h-96 flex items-center justify-center">
+                            <i class="fas fa-image text-gray-400 text-5xl"></i>
+                        </div>
+                    @endif
+                </div>
+
+                @if ($post->mediaContent->count() > 1)
+                    <!-- Pagination Controls -->
+                    <div class="absolute inset-x-0 top-1/2 transform -translate-y-1/2 flex justify-between px-4 z-10">
+                        <button id="prev-btn"
+                            class="bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-md transition-all">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button id="next-btn"
+                            class="bg-white/80 hover:bg-white text-gray-800 rounded-full p-2 shadow-md transition-all">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Pagination Indicators -->
+                    <div class="absolute bottom-4 inset-x-0 flex justify-center gap-2">
+                        @foreach ($post->mediaContent as $index => $media)
+                            <button
+                                class="pagination-indicator h-2 w-2 rounded-full {{ $index === 0 ? 'bg-white' : 'bg-white/50' }}"
+                                data-index="{{ $index }}"></button>
+                        @endforeach
                     </div>
                 @endif
             </div>
@@ -150,4 +181,60 @@
 
 @section('scripts')
     @include('components.ajax');
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const mediaItems = document.querySelectorAll('.media-item');
+            const indicators = document.querySelectorAll('.pagination-indicator');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            let currentIndex = 0;
+            const totalItems = mediaItems.length;
+
+            if (totalItems <= 1) return;
+
+            function showMedia(index) {
+                mediaItems.forEach(item => item.classList.add('hidden'));
+
+                mediaItems[index].classList.remove('hidden');
+
+                // Update indicators
+                indicators.forEach(indicator => indicator.classList.replace('bg-white', 'bg-white/50'));
+                indicators[index].classList.replace('bg-white/50', 'bg-white');
+
+                currentIndex = index;
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function() {
+                    const newIndex = (currentIndex + 1) % totalItems;
+                    showMedia(newIndex);
+                });
+            }
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function() {
+                    const newIndex = (currentIndex - 1 + totalItems) % totalItems;
+                    showMedia(newIndex);
+                });
+            }
+
+            // Indicator clicks
+            indicators.forEach(indicator => {
+                indicator.addEventListener('click', function() {
+                    const index = parseInt(this.getAttribute('data-index'));
+                    showMedia(index);
+                });
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowRight') {
+                    const newIndex = (currentIndex + 1) % totalItems;
+                    showMedia(newIndex);
+                } else if (e.key === 'ArrowLeft') {
+                    const newIndex = (currentIndex - 1 + totalItems) % totalItems;
+                    showMedia(newIndex);
+                }
+            });
+        });
+    </script>
 @endsection
