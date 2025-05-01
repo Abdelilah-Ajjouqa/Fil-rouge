@@ -79,9 +79,13 @@ class AdminController extends Controller
             $post->status = Posts::is_archived;
             $post->save();
 
-            return redirect()->back()->with('success', 'Post archived successfully.');
+            return redirect()
+                ->route('posts.index')
+                ->with('success', 'Post has been archived successfully and is now only visible to administrators.');
         } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Error archiving post: ' . $e->getMessage());
+            return redirect()
+                ->back()
+                ->with('error', 'Error archiving post: ' . $e->getMessage());
         }
     }
 

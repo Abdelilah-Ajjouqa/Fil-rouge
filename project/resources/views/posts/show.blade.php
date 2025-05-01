@@ -73,7 +73,7 @@
                             <i class="fas fa-share-alt text-xl"></i>
                         </button>
 
-                        @if (Auth::check() && (Auth::id() == $post->user_id || Auth::user()->role == 'admin'))
+                        @if (Auth::check() && Auth::id() == $post->user_id)
                             <div class="relative" x-data="{ open: false }">
                                 <button @click="open = !open" class="text-gray-600 hover:bg-gray-100 p-2 rounded-full">
                                     <i class="fas fa-ellipsis-h text-xl"></i>
@@ -82,17 +82,35 @@
                                     class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
                                     <a href="{{ route('posts.edit', $post->id) }}"
                                         class="block px-4 py-2 text-gray-700 hover:bg-gray-100 ">
-                                        <i class="fas fa-edit mr-2"></i> Edit Pin
+                                        <i class="fas fa-edit mr-2"></i> Edit post
                                     </a>
                                     <form action="{{ route('posts.destroy', $post->id) }}" method="POST"
-                                        onsubmit="return confirm('Are you sure you want to delete this pin?');">
+                                        onsubmit="return confirm('Are you sure you want to delete this post?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
                                             class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
-                                            <i class="fas fa-trash-alt mr-2"></i> Delete Pin
+                                            <i class="fas fa-trash-alt mr-2"></i> Delete post
                                         </button>
                                     </form>
+                                </div>
+                            </div>
+                        @endif
+
+                        @if (Auth::check() && Auth::user()->role == 'admin')
+                            <div class="relative" x-data="{ open: false }">
+                                <button @click="open = !open" class="text-gray-600 hover:bg-gray-100 p-2 rounded-full">
+                                    <i class="fas fa-ellipsis-h text-xl"></i>
+                                </button>
+                                <div x-show="open" @click.away="open = false"
+                                    class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                                <form action="{{ route('admin.posts.archive', $post->id) }}" method="post" onsubmit="return confirm('Are you sure you want to archive this post ?');">
+                                    @csrf
+                                    <button type="submit" class="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-100">
+                                        <i class="fa-solid fa-box-archive"></i> Archive Post
+                                    </button>
+                                </form>
+
                                 </div>
                             </div>
                         @endif
@@ -142,7 +160,7 @@
         </div>
     </div>
 
-    <!-- Related Pins -->
+    <!-- Related posts -->
     <div class="mt-12">
         <h2 class="text-xl font-bold mb-6">More like this</h2>
 
@@ -156,8 +174,8 @@
                                 style="aspect-ratio: {{ rand(3, 5) }}/{{ rand(4, 8) }};"></div>
                         </a>
                         <div class="p-4">
-                            <h3 class="font-semibold text-lg truncate">Related Pin Title</h3>
-                            <p class="text-gray-600 text-sm line-clamp-2 mt-1">Description of the related pin</p>
+                            <h3 class="font-semibold text-lg truncate">Related post Title</h3>
+                            <p class="text-gray-600 text-sm line-clamp-2 mt-1">Description of the related post</p>
 
                             <div class="flex items-center justify-between mt-3">
                                 <div class="flex items-center">

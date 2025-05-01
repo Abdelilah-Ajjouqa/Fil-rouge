@@ -62,9 +62,9 @@ Route::middleware(['auth', 'userStatus'])->group(function () {
 
         // Post management
         Route::get('/posts/archived', [AdminController::class, 'getAllArchivePosts'])->name('posts.archived');
-        Route::put('/posts/{id}/archive', [AdminController::class, 'archivePost'])->name('posts.archive');
-        Route::put('/posts/{id}/restore', [AdminController::class, 'restorePost'])->name('posts.restore');
-        Route::delete('/posts/{id}/force', [AdminController::class, 'deletePost'])->name('posts.force-delete');
+        Route::post('/posts/{id}/archive', [AdminController::class, 'archivePost'])->name('posts.archive');
+        Route::post('/posts/{id}/restore', [AdminController::class, 'restorePost'])->name('posts.restore');
+        Route::delete('/posts/{id}/force', [AdminController::class, 'deletePost'])->name('posts.delete');
 
         // Comment management
         Route::delete('/comment/{id}/force', [AdminController::class, 'deleteComment'])->name('comments.force-delete');

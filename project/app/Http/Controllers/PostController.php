@@ -14,6 +14,7 @@ class PostController extends Controller
     public function index()
     {
         $post = Posts::with('mediaContent', 'tags')
+            ->where('status', '!=', Posts::is_archived)
             ->orderBy('created_at', 'desc')
             ->get();
 

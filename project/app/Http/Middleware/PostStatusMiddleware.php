@@ -15,6 +15,14 @@ class PostStatusMiddleware
         $user = $request->user();
 
         switch ($post->status) {
+            case Posts::is_archived:
+                if ($user && $user->role === 'admin') {
+                    return $next($request);
+                }
+                return redirect()
+                    ->route('posts.index')
+                    ->with('error', 'This post has been archived and is only accessible by administrators.');
+
             case Posts::is_public:
                 return $next($request);
 
@@ -25,14 +33,6 @@ class PostStatusMiddleware
                 return redirect()
                     ->route('posts.index')
                     ->with('error', 'You do not have access to view this post');
-
-            case Posts::is_archived:
-                if ($user && $user->getRole('admin')) {
-                    return $next($request);
-                }
-                return redirect()
-                    ->route('posts.index')
-                    ->with('error', 'This post has been archived');
 
             default:
                 return redirect()
