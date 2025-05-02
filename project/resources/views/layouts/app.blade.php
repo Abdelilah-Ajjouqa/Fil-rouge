@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('styles')
 </head>
@@ -18,22 +19,34 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 pt-20 pb-10">
-        @if (session('success'))
-            <div class="alert-success border rounded mb-4 px-4 py-3">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert-error border rounded mb-4 px-4 py-3">
-                {{ session('error') }}
-            </div>
-        @endif
-
         @yield('content')
     </main>
 
     @include('layouts.footer')
+
+    <script>
+        @if (session('success'))
+            Swal.fire({
+                title: 'Success!',
+                text: '{{ session('success') }}',
+                icon: 'success',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+        @endif
+
+        @if (session('error'))
+            Swal.fire({
+                title: 'Error!',
+                text: '{{ session('error') }}',
+                icon: 'error',
+                timer: 3000,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+        @endif
+    </script>
 
     @yield('scripts')
 </body>
