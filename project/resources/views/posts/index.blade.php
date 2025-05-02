@@ -26,8 +26,15 @@
                         <div class="bg-gray-50 rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
                             <a href="{{ route('posts.show', $item->id) }}"
                                 class="block hover:opacity-85 overflow-hidden rounded-t-lg">
-                                <img src="{{ asset('storage/' . $item->mediaContent->first()->path) }}"
-                                    alt="{{ $item->title }}" class="w-full object-cover">
+                                @if (str_contains($item->mediaContent->first()->type, 'video'))
+                                    <video class="w-full object-cover" autoplay muted loop playsinline>
+                                        <source src="{{ asset('storage/' . $item->mediaContent->first()->path) }}" type="{{ $item->mediaContent->first()->type }}">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                @else
+                                    <img src="{{ asset('storage/' . $item->mediaContent->first()->path) }}"
+                                        alt="{{ $item->title }}" class="w-full object-cover">
+                                @endif
                             </a>
                             <div class="p-2">
                                 <h3 class="font-semibold text-lg truncate cursor-pointer">{{ $item->title }}</h3>

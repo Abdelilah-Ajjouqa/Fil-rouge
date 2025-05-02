@@ -10,12 +10,27 @@
                 <div class="flex-grow flex items-center justify-center">
                     @if ($post->mediaContent->isNotEmpty())
                         @foreach ($post->mediaContent as $index => $media)
-                            <div id="media-{{ $index }}"
-                                class="media-item w-full h-full flex items-center justify-center {{ $index > 0 ? 'hidden' : '' }}">
-                                <img src="{{ asset('storage/' . $media->path) }}"
-                                    alt="{{ $post->title }} - Image {{ $index + 1 }}"
-                                    class="w-full h-auto max-h-[80vh] object-contain">
-                            </div>
+                            @if (str_contains($media->type, 'video'))
+                                <div id="media-{{ $index }}" 
+                                    class="media-item w-full h-full flex items-center justify-center {{ $index > 0 ? 'hidden' : '' }}">
+                                    <video class="w-full h-auto max-h-[80vh] object-contain" 
+                                        controls 
+                                        loop 
+                                        playsinline
+                                        preload="metadata">
+                                        <source src="{{ asset('storage/' . $media->path) }}"
+                                            type="{{ $media->type }}">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            @else
+                                <div id="media-{{ $index }}"
+                                    class="media-item w-full h-full flex items-center justify-center {{ $index > 0 ? 'hidden' : '' }}">
+                                    <img src="{{ asset('storage/' . $media->path) }}"
+                                        alt="{{ $post->title }} - Image {{ $index + 1 }}"
+                                        class="w-full h-auto max-h-[80vh] object-contain">
+                                </div>
+                            @endif
                         @endforeach
                     @else
                         <div class="bg-gray-200 w-full h-96 flex items-center justify-center">
@@ -104,12 +119,14 @@
                                 </button>
                                 <div x-show="open" @click.away="open = false"
                                     class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                                <form action="{{ route('admin.posts.archive', $post->id) }}" method="post" onsubmit="return confirm('Are you sure you want to archive this post ?');">
-                                    @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-100">
-                                        <i class="fa-solid fa-box-archive"></i> Archive Post
-                                    </button>
-                                </form>
+                                    <form action="{{ route('admin.posts.archive', $post->id) }}" method="post"
+                                        onsubmit="return confirm('Are you sure you want to archive this post ?');">
+                                        @csrf
+                                        <button type="submit"
+                                            class="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-100">
+                                            <i class="fa-solid fa-box-archive"></i> Archive Post
+                                        </button>
+                                    </form>
 
                                 </div>
                             </div>

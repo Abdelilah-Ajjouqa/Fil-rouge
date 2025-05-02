@@ -117,12 +117,21 @@
                             const previewItem = document.createElement('div');
                             previewItem.className = 'relative';
 
-                            const img = document.createElement('img');
-                            img.src = e.target.result;
-                            img.className = 'h-40 w-full object-cover rounded';
-                            img.alt = 'Preview';
+                            if (file.type.startsWith('video/')) {
+                                const video = document.createElement('video');
+                                video.src = e.target.result;
+                                video.className = 'h-40 w-full object-cover rounded';
+                                video.controls = true;
+                                video.muted = true;
+                                previewItem.appendChild(video);
+                            } else {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.className = 'h-40 w-full object-cover rounded';
+                                img.alt = 'Preview';
+                                previewItem.appendChild(img);
+                            }
 
-                            previewItem.appendChild(img);
                             previewContainer.appendChild(previewItem);
                         }
 
