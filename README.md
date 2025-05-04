@@ -80,8 +80,8 @@ Développement d'une plateforme web permettant aux utilisateurs de consulter et 
 
 **Langages et technologies :**
 - HTML5, CSS3 (Tailwind CSS)
-- Blade (from Laravel) & JavaScript ES6
-- Laravel
+- Blade (from Laravel) & JavaScript ES6 (Alpine JS & Ajax)
+- Laravel 12
 - PostgreSQL
 
 **Hébergement :**
