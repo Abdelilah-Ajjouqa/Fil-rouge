@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\SavedPostController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('auth.logout');
 
 // Public routes
+Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/', [PostController::class, 'index'])->name('posts.index');
 // Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post_id}/comments', [CommentController::class, 'index'])->name('comments.index');
