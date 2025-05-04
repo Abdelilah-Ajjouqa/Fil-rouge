@@ -7,11 +7,15 @@
         </a>
 
         <div class="hidden md:block flex-grow mx-4">
-            <div class="relative">
-                <input type="text" placeholder="Search"
-                    class="w-full bg-gray-100 rounded-full py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-700">
-                <i class="fas fa-search absolute left-3 top-3 text-gray-500"></i>
-            </div>
+            <form action="{{ route('search') }}" method="GET">
+                <div class="relative">
+                    <input type="text" name="q" placeholder="Search"
+                        value="{{ request('q') }}"
+                        class="w-full bg-gray-100 rounded-full py-2 px-4 pl-10 focus:outline-none focus:ring-2 focus:ring-blue-700">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-500"></i>
+                    <button type="submit" class="hidden">Search</button>
+                </div>
+            </form>
         </div>
 
         <div class="flex items-center space-x-4">
@@ -54,4 +58,4 @@
             @endauth
         </div>
     </div>
-</nav> 
+</nav>
