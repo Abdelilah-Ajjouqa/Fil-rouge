@@ -165,9 +165,7 @@ class AlbumController extends Controller
         }
     }
 
-    /**
-     * Add a post to an album.
-     */
+    // Add a post to an album
     public function addPost(Request $request, string $albumId)
     {
         try {
