@@ -54,7 +54,6 @@
         </div>
 
         <!-- Tabs -->
-        <!-- Tabs -->
         <div class="border-b mb-6">
             <div class="flex justify-center">
                 <button id="created-tab" class="px-4 py-2 border-b-2 border-red-600 text-red-600 font-medium">
@@ -77,10 +76,24 @@
                         class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
                         <a href="{{ route('posts.show', $item->id) }}" class="block">
                             @if ($item->mediaContent->isNotEmpty())
-                                <img src="{{ asset('storage/' . $item->mediaContent->first()->path) }}"
-                                    alt="{{ $item->title }}" class="w-full object-cover">
+                                @php
+                                    $media = $item->mediaContent->first();
+                                    $isVideo = str_contains($media->type, 'video');
+                                @endphp
+
+                                @if ($isVideo)
+                                    <video class="w-full object-cover" autoplay muted loop playsinline>
+                                        <source src="{{ asset('storage/' . $media->path) }}" type="{{ $media->type }}">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                @else
+                                    <img src="{{ asset('storage/' . $media->path) }}" alt="{{ $item->title }}"
+                                        class="w-full object-cover">
+                                @endif
                             @else
-                                <div class="bg-gray-200 w-full"></div>
+                                <div class="bg-gray-200 w-full h-48 flex items-center justify-center">
+                                    <i class="fas fa-image text-gray-400 text-4xl"></i>
+                                </div>
                             @endif
                         </a>
                         <div class="p-4">
@@ -114,10 +127,24 @@
                         class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
                         <a href="{{ route('posts.show', $savedPost->post->id) }}" class="block">
                             @if ($savedPost->post->mediaContent->isNotEmpty())
-                                <img src="{{ asset('storage/' . $savedPost->post->mediaContent->first()->path) }}"
-                                    alt="{{ $savedPost->post->title }}" class="w-full object-cover">
+                                @php
+                                    $media = $savedPost->post->mediaContent->first();
+                                    $isVideo = str_contains($media->type, 'video');
+                                @endphp
+
+                                @if ($isVideo)
+                                    <video class="w-full object-cover" autoplay muted loop playsinline>
+                                        <source src="{{ asset('storage/' . $media->path) }}" type="{{ $media->type }}">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                @else
+                                    <img src="{{ asset('storage/' . $media->path) }}" alt="{{ $savedPost->post->title }}"
+                                        class="w-full object-cover">
+                                @endif
                             @else
-                                <div class="bg-gray-200 w-full"></div>
+                                <div class="bg-gray-200 w-full h-48 flex items-center justify-center">
+                                    <i class="fas fa-image text-gray-400 text-4xl"></i>
+                                </div>
                             @endif
                         </a>
                         <div class="p-4">
