@@ -166,77 +166,41 @@ class AlbumController extends Controller
     }
 
     // Add a post to an album
-    public function addPost(Request $request, string $albumId)
+    public function addPost(Request $request, $id)
     {
         try {
-            $album = Album::findOrFail($albumId);
+            // Find the album with explicit user_id check
+            $album = Album::where('id', $id)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
 
-            // Check if user owns this album
-            if ($album->user_id !== Auth::id()) {
-                if ($request->ajax() || $request->wantsJson()) {
-                    return response()->json([
-                        'status' => 'error',
-                        'message' => 'You do not have permission to modify this album.'
-                    ], 403);
-                }
-
-                return redirect()
-                    ->back()
-                    ->with('error', 'You do not have permission to modify this album.');
-            }
-
-            $validated = $request->validate([
-                'post_id' => 'required|exists:posts,id',
+            // Validate the post_id
+            $request->validate([
+                'post_id' => 'required|exists:posts,id'
             ]);
 
-            $post = Posts::findOrFail($validated['post_id']);
+            $postId = $request->input('post_id');
 
-            // Check if post is already in the album
-            if ($album->posts()->where('post_id', $post->id)->exists()) {
-                if ($request->ajax() || $request->wantsJson()) {
-                    return response()->json([
-                        'status' => 'info',
-                        'message' => 'Post is already in this album.'
-                    ]);
-                }
-
-                return redirect()
-                    ->back()
-                    ->with('info', 'Post is already in this album.');
-            }
-
-            // Add post to album
-            $album->posts()->attach($post->id);
-
-            // If this is the first post and no cover image, use this post's image as cover
-            if ($album->posts()->count() === 1 && !$album->cover_image) {
-                if ($post->mediaContent()->exists()) {
-                    $album->cover_image = $post->mediaContent()->first()->path;
-                    $album->save();
-                }
-            }
-
-            if ($request->ajax() || $request->wantsJson()) {
+            // Check if post already exists in album
+            if ($album->posts()->where('post_id', $postId)->exists()) {
                 return response()->json([
-                    'status' => 'success',
-                    'message' => 'Post added to album successfully.'
+                    'status' => 'error',
+                    'message' => 'Post already exists in this album'
                 ]);
             }
 
-            return redirect()
-                ->back()
-                ->with('success', 'Post added to album successfully!');
-        } catch (Exception $e) {
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Failed to add post to album: ' . $e->getMessage()
-                ], 500);
-            }
+            // Add post to album
+            $album->posts()->attach($postId);
 
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to add post to album: ' . $e->getMessage());
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Post added to album successfully'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Album not found or you do not have permission to modify it: ' . $e->getMessage()
+            ], 404);
         }
     }
 
