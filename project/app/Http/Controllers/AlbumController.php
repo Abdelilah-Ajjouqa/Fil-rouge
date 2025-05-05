@@ -61,5 +61,230 @@ class AlbumController extends Controller
         }
     }
 
-    
+    public function show(string $id)
+    {
+        $album = Album::with(['posts.mediaContent', 'posts.user'])
+            ->findOrFail($id);
+
+        // Check if user can view this album
+        if ($album->is_private && $album->user_id !== Auth::id()) {
+            return redirect()
+                ->route('albums.index')
+                ->with('error', 'You do not have permission to view this album.');
+        }
+
+        return view('albums.show', compact('album'));
+    }
+
+    public function edit(string $id)
+    {
+        $album = Album::findOrFail($id);
+
+        // Check if user can edit this album
+        if ($album->user_id !== Auth::id()) {
+            return redirect()
+                ->route('albums.index')
+                ->with('error', 'You do not have permission to edit this album.');
+        }
+
+        return view('albums.edit', compact('album'));
+    }
+
+    public function update(Request $request, string $id)
+    {
+        try {
+            $album = Album::findOrFail($id);
+
+            // Check if user can update this album
+            if ($album->user_id !== Auth::id()) {
+                return redirect()
+                    ->route('albums.index')
+                    ->with('error', 'You do not have permission to update this album.');
+            }
+
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'is_private' => 'boolean',
+                'cover_image' => 'nullable|image|max:2048',
+            ]);
+
+            $album->title = $validated['title'];
+            $album->description = $validated['description'] ?? null;
+            $album->is_private = $validated['is_private'] ?? false;
+
+            if ($request->hasFile('cover_image')) {
+                // Delete old cover image if exists
+                if ($album->cover_image) {
+                    Storage::disk('public')->delete($album->cover_image);
+                }
+
+                $path = $request->file('cover_image')->store('album_covers', 'public');
+                $album->cover_image = $path;
+            }
+
+            $album->save();
+
+            return redirect()
+                ->route('albums.show', $album->id)
+                ->with('success', 'Album updated successfully!');
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to update album: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            $album = Album::findOrFail($id);
+
+            // Check if user can delete this album
+            if ($album->user_id !== Auth::id()) {
+                return redirect()
+                    ->route('albums.index')
+                    ->with('error', 'You do not have permission to delete this album.');
+            }
+
+            // Delete cover image if exists
+            if ($album->cover_image) {
+                Storage::disk('public')->delete($album->cover_image);
+            }
+
+            $album->delete();
+
+            return redirect()
+                ->route('albums.index')
+                ->with('success', 'Album deleted successfully!');
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to delete album: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Add a post to an album.
+     */
+    public function addPost(Request $request, string $albumId)
+    {
+        try {
+            $album = Album::findOrFail($albumId);
+
+            // Check if user owns this album
+            if ($album->user_id !== Auth::id()) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You do not have permission to modify this album.'
+                    ], 403);
+                }
+
+                return redirect()
+                    ->back()
+                    ->with('error', 'You do not have permission to modify this album.');
+            }
+
+            $validated = $request->validate([
+                'post_id' => 'required|exists:posts,id',
+            ]);
+
+            $post = Posts::findOrFail($validated['post_id']);
+
+            // Check if post is already in the album
+            if ($album->posts()->where('post_id', $post->id)->exists()) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'status' => 'info',
+                        'message' => 'Post is already in this album.'
+                    ]);
+                }
+
+                return redirect()
+                    ->back()
+                    ->with('info', 'Post is already in this album.');
+            }
+
+            // Add post to album
+            $album->posts()->attach($post->id);
+
+            // If this is the first post and no cover image, use this post's image as cover
+            if ($album->posts()->count() === 1 && !$album->cover_image) {
+                if ($post->mediaContent()->exists()) {
+                    $album->cover_image = $post->mediaContent()->first()->path;
+                    $album->save();
+                }
+            }
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Post added to album successfully.'
+                ]);
+            }
+
+            return redirect()
+                ->back()
+                ->with('success', 'Post added to album successfully!');
+        } catch (Exception $e) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to add post to album: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to add post to album: ' . $e->getMessage());
+        }
+    }
+
+    public function removePost(Request $request, string $albumId, string $postId)
+    {
+        try {
+            $album = Album::findOrFail($albumId);
+
+            // Check if user owns this album
+            if ($album->user_id !== Auth::id()) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'You do not have permission to modify this album.'
+                    ], 403);
+                }
+
+                return redirect()
+                    ->back()
+                    ->with('error', 'You do not have permission to modify this album.');
+            }
+
+            // Remove post from album
+            $album->posts()->detach($postId);
+
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Post removed from album successfully.'
+                ]);
+            }
+
+            return redirect()
+                ->back()
+                ->with('success', 'Post removed from album successfully!');
+        } catch (Exception $e) {
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to remove post from album: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return redirect()
+                ->back()
+                ->with('error', 'Failed to remove post from album: ' . $e->getMessage());
+        }
+    }
 }

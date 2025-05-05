@@ -65,6 +65,12 @@ Route::middleware(['auth', 'userStatus'])->group(function () {
     // Album post management
     Route::post('/albums/{id}/posts', [AlbumController::class, 'addPost'])->name('albums.posts.add');
     Route::delete('/albums/{id}/posts/{post_id}', [AlbumController::class, 'removePost'])->name('albums.posts.remove');
+    
+    // User posts for album selection
+    Route::get('/users/{id}/posts', [UserController::class, 'getPosts'])->name('users.posts');
+    
+    // User albums for post selection
+    Route::get('/users/{id}/albums', [UserController::class, 'getAlbums'])->name('users.albums');
 
     // Admin-only routes
     Route::middleware('is_admin:admin')->prefix('admin')->name('admin.')->group(function () {
