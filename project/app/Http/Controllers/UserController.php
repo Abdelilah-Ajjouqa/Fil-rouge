@@ -28,14 +28,32 @@ class UserController extends Controller
 
     public function show(string $id)
     {
-        $user = User::findOrFail($id);
-        $posts = Posts::where('user_id', $id)
-            ->get();
-        $savedPosts = SavedPost::with(['post.mediaContent', 'post.user'])
-            ->where('user_id', $id)
-            ->get();
+        try {
+            $user = User::findOrFail($id);
+            $posts = Posts::where('user_id', $id)
+                ->where(function ($query) {
+                    $query->where('status', 'public')
+                        ->orWhere(function ($q) {
+                            if (Auth::check()) {
+                                $q->where('user_id', Auth::id());
+                            }
+                        });
+                })
+                ->get();
 
-        return view('users.show', compact('user', 'posts', 'savedPosts'));
+            $savedPosts = collect(); // Empty collection for guests
+            if (Auth::check()) {
+                $savedPosts = SavedPost::with(['post.mediaContent', 'post.user'])
+                    ->where('user_id', $id)
+                    ->get();
+            }
+
+            return view('users.show', compact('user', 'posts', 'savedPosts'));
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'User not found: ' .  $e->getMessage());
+        }
     }
 
     public function edit($id)
@@ -158,8 +176,8 @@ class UserController extends Controller
             return view('users.albums', compact('albums', 'postId'));
         } catch (Exception $e) {
             return redirect()
-            ->back()
-            ->with('error', $e->getMessage());
+                ->back()
+                ->with('error', $e->getMessage());
         }
     }
 }

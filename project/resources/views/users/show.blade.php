@@ -34,21 +34,23 @@
                 <p>{{ $user->username }}</p>
             </span>
 
-
+            <!-- User Actions -->
             <div class="flex justify-center mt-4 space-x-2">
-                @if (Auth::check() && Auth::id() == $user->id)
-                    <a href="{{ route('users.edit', $user->id) }}"
-                        class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-full">
-                        <i class="fas fa-edit mr-1"></i> Edit Profile
-                    </a>
-                @else
-                    <button class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-full">
-                        Follow
-                    </button>
-                @endif
-
+                @auth
+                    @if (Auth::id() == $user->id)
+                        <a href="{{ route('users.edit', $user->id) }}"
+                            class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-full">
+                            <i class="fas fa-edit mr-1"></i> Edit Profile
+                        </a>
+                    @else
+                        <button class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-full">
+                            Follow
+                        </button>
+                    @endif
+                @endauth
+                
                 <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-full">
-                    <i class="fas fa-share-alt mr-1"></i> Share
+                    <i class="fas-fa-share-alt mr-1"></i> Share
                 </button>
             </div>
         </div>
@@ -59,9 +61,11 @@
                 <button id="created-tab" class="px-4 py-2 border-b-2 border-red-600 text-red-600 font-medium">
                     Created
                 </button>
-                <button id="saved-tab" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800">
-                    Saved
-                </button>
+                @auth
+                    <button id="saved-tab" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800">
+                        Saved
+                    </button>
+                @endauth
                 <button id="albums-tab" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800">
                     Albums
                 </button>

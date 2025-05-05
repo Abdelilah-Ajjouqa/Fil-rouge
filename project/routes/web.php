@@ -34,6 +34,7 @@ Route::get('/', [PostController::class, 'index'])->name('posts.index');
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/posts/{post_id}/comments', [CommentController::class, 'index'])->name('comments.index');
 Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
 
 /*
 |--------------------------------------------------------------------------
@@ -41,7 +42,7 @@ Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'userStatus'])->prefix('users')->name('users.')->group(function () {
-    Route::get('/{id}', [UserController::class, 'show'])->name('show');
+    // Route::get('/{id}', [UserController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [UserController::class, 'edit'])->name('edit');
     Route::post('/{id}', [UserController::class, 'update'])->name('update');
     Route::delete('/{id}', [UserController::class, 'destroy'])->name('destroy');
