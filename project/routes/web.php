@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PostController;
@@ -50,6 +51,26 @@ Route::middleware(['auth', 'userStatus'])->group(function () {
     // Saved posts
     Route::post('/save/{post_id}', [SavedPostController::class, 'save'])->name('save');
     Route::post('/unsave/{post_id}', [SavedPostController::class, 'unsave'])->name('unsave');
+
+
+    // Album routes
+    Route::get('/albums', [AlbumController::class, 'index'])->name('albums.index');
+    Route::get('/albums/create', [AlbumController::class, 'create'])->name('albums.create');
+    Route::post('/albums', [AlbumController::class, 'store'])->name('albums.store');
+    Route::get('/albums/{id}', [AlbumController::class, 'show'])->name('albums.show');
+    Route::get('/albums/{id}/edit', [AlbumController::class, 'edit'])->name('albums.edit');
+    Route::put('/albums/{id}', [AlbumController::class, 'update'])->name('albums.update');
+    Route::delete('/albums/{id}', [AlbumController::class, 'destroy'])->name('albums.destroy');
+    
+    // Album post management
+    Route::post('/albums/{id}/posts', [AlbumController::class, 'addPost'])->name('albums.posts.add');
+    Route::delete('/albums/{id}/posts/{post_id}', [AlbumController::class, 'removePost'])->name('albums.posts.remove');
+    
+    // User posts for album selection
+    Route::get('/users/{id}/posts', [UserController::class, 'getPosts'])->name('users.posts');
+    
+    // User albums for post selection
+    Route::get('/users/{id}/albums', [UserController::class, 'getAlbums'])->name('users.albums');
 
     // Admin-only routes
     Route::middleware('is_admin:admin')->prefix('admin')->name('admin.')->group(function () {

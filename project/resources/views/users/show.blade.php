@@ -54,6 +54,7 @@
         </div>
 
         <!-- Tabs -->
+        <!-- Tabs -->
         <div class="border-b mb-6">
             <div class="flex justify-center">
                 <button id="created-tab" class="px-4 py-2 border-b-2 border-red-600 text-red-600 font-medium">
@@ -61,6 +62,9 @@
                 </button>
                 <button id="saved-tab" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800">
                     Saved
+                </button>
+                <button id="albums-tab" class="px-4 py-2 border-b-2 border-transparent text-gray-600 hover:text-gray-800">
+                    Albums
                 </button>
             </div>
         </div>
@@ -155,10 +159,115 @@
                 </div>
             @endforelse
         </div>
+
+        <!-- Albums Grid -->
+        <div id="albums-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden">
+            @if (Auth::check() && Auth::id() == $user->id)
+                <a href="{{ route('albums.create') }}" class="block h-full">
+                    <div
+                        class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-dashed border-gray-300 flex flex-col items-center justify-center h-full p-6">
+                        <div class="text-gray-400 mb-2">
+                            <i class="fas fa-plus-circle text-4xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg text-gray-600">Create New Album</h3>
+                    </div>
+                </a>
+            @endif
+
+            @forelse($user->albums()->withCount('posts')->latest()->get() as $album)
+                @if (!$album->is_private || Auth::id() == $user->id)
+                    <div
+                        class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                        <a href="{{ route('albums.show', $album->id) }}" class="block">
+                            <div class="relative pb-[100%]">
+                                @if ($album->cover_image)
+                                    <img src="{{ asset('storage/' . $album->cover_image) }}" alt="{{ $album->title }}"
+                                        class="absolute inset-0 w-full h-full object-cover">
+                                @else
+                                    <div class="absolute inset-0 bg-gray-200 flex items-center justify-center">
+                                        <i class="fas fa-images text-gray-400 text-4xl"></i>
+                                    </div>
+                                @endif
+
+                                @if ($album->is_private)
+                                    <div
+                                        class="absolute top-2 right-2 bg-black bg-opacity-70 text-white rounded-full p-1 w-8 h-8 flex items-center justify-center">
+                                        <i class="fas fa-lock"></i>
+                                    </div>
+                                @endif
+                            </div>
+                        </a>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg truncate">{{ $album->title }}</h3>
+                            <div class="flex justify-between items-center mt-2">
+                                <span class="text-gray-600 text-sm">{{ $album->posts_count }}
+                                    {{ Str::plural('post', $album->posts_count) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @empty
+                <div class="col-span-full text-center py-10">
+                    <div class="text-gray-500 mb-4">
+                        <i class="fas fa-folder-open text-5xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">No albums yet</h3>
+                    @if (Auth::check() && Auth::id() == $user->id)
+                        <p class="text-gray-600 mb-4">Create albums to organize your posts</p>
+                        <a href="{{ route('albums.create') }}"
+                            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
+                            Create your first album
+                        </a>
+                    @endif
+                </div>
+            @endforelse
+        </div>
     </div>
 @endsection
 
 @section('scripts')
     @include('components.tabs')
     @include('components.save')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const createdTab = document.getElementById('created-tab');
+            const savedTab = document.getElementById('saved-tab');
+            const albumsTab = document.getElementById('albums-tab');
+
+            const createdPosts = document.getElementById('created-posts');
+            const savedPosts = document.getElementById('saved-posts');
+            const albumsGrid = document.getElementById('albums-grid');
+
+            createdTab.addEventListener('click', function() {
+                createdTab.classList.add('border-red-600', 'text-red-600');
+                savedTab.classList.remove('border-red-600', 'text-red-600');
+                albumsTab.classList.remove('border-red-600', 'text-red-600');
+
+                createdPosts.classList.remove('hidden');
+                savedPosts.classList.add('hidden');
+                albumsGrid.classList.add('hidden');
+            });
+
+            savedTab.addEventListener('click', function() {
+                savedTab.classList.add('border-red-600', 'text-red-600');
+                createdTab.classList.remove('border-red-600', 'text-red-600');
+                albumsTab.classList.remove('border-red-600', 'text-red-600');
+
+                savedPosts.classList.remove('hidden');
+                createdPosts.classList.add('hidden');
+                albumsGrid.classList.add('hidden');
+            });
+
+            albumsTab.addEventListener('click', function() {
+                albumsTab.classList.add('border-red-600', 'text-red-600');
+                createdTab.classList.remove('border-red-600', 'text-red-600');
+                savedTab.classList.remove('border-red-600', 'text-red-600');
+
+                albumsGrid.classList.remove('hidden');
+                createdPosts.classList.add('hidden');
+                savedPosts.classList.add('hidden');
+            });
+        });
+    </script>
 @endsection
