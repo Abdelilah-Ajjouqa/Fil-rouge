@@ -8,6 +8,7 @@ use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Exception;
+use App\Models\Activity;
 
 class PostController extends Controller
 {
@@ -54,6 +55,15 @@ class PostController extends Controller
                     ]);
                 }
             }
+
+            // Log activity
+            Activity::create([
+                'user_id' => $request->user()->id,
+                'action' => 'created',
+                'item_type' => 'post',
+                'item_id' => $post->id,
+                'description' => 'New post: "' . $post->title . '"',
+            ]);
 
             return redirect()
                 ->route('posts.index')
@@ -141,6 +151,15 @@ class PostController extends Controller
             $media->delete();
         }
         $post->delete();
+
+        // Log activity
+        Activity::create([
+            'user_id' => auth()->id(),
+            'action' => 'deleted',
+            'item_type' => 'post',
+            'item_id' => $post->id,
+            'description' => 'Post: "' . $post->title . '"',
+        ]);
 
         return redirect()
             ->route('posts.index')
