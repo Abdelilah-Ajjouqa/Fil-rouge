@@ -68,7 +68,19 @@ class PostController extends Controller
     public function show(string $id)
     {
         $post = Posts::with('mediaContent', 'tags')->findOrFail($id);
-        return view('posts.show', compact('post'));
+        
+        // Get related posts based on tags
+        $relatedPosts = Posts::whereHas('tags', function ($query) use ($post) {
+            $query->whereIn('tags.id', $post->tags->pluck('id'));
+        })
+        ->where('id', '!=', $post->id) // Exclude the current post
+        ->where('status', '!=', Posts::is_archived)
+        ->with(['mediaContent', 'user', 'tags'])
+        ->inRandomOrder()
+        // ->limit(6)
+        ->get();
+
+        return view('posts.show', compact('post', 'relatedPosts'));
     }
 
     public function edit(string $id)
