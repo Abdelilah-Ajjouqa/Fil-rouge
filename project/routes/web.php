@@ -45,7 +45,7 @@ Route::middleware(['auth', 'userStatus'])->prefix('users')->name('users.')->grou
 
 /*
 |--------------------------------------------------------------------------
-| Protected Routes - Posts
+| Protected Routes - Posts & Comments
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'userStatus'])->prefix('posts')->group(function () {
@@ -53,7 +53,7 @@ Route::middleware(['auth', 'userStatus'])->prefix('posts')->group(function () {
     Route::post('', [PostController::class, 'store'])->name('posts.store');
     // Comment routes
     Route::post('/{post_id}/comments', [CommentController::class, 'store'])->name('comments.store');
-    Route::post('/{post_id}/comments/{comment_id}', [CommentController::class, 'update'])->name('comments.update');
+    Route::put('/{post_id}/comments/{comment_id}', [CommentController::class, 'update'])->name('comments.update');
     Route::delete('/{post_id}/comments/{comment_id}', [CommentController::class, 'destroy'])->name('comments.destroy');
 
     Route::middleware('postStatus')->group(function () {
