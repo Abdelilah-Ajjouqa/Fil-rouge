@@ -12,8 +12,8 @@
 
                 <div class="mb-4">
                     <label for="title" class="block text-gray-700 font-medium mb-2">Title</label>
-                    <input type="text" name="title" id="title" value="{{ old('title') }}" required
-                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-red-500 focus:ring focus:ring-red-200">
+                    <input type="text" name="title" id="title" placeholder="Enter album title" value="{{ old('title') }}" required
+                        class="w-full h-9 pl-2 border border-gray-300 rounded-md shadow-sm">
                     @error('title')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -21,8 +21,8 @@
 
                 <div class="mb-4">
                     <label for="description" class="block text-gray-700 font-medium mb-2">Description (Optional)</label>
-                    <textarea name="description" id="description" rows="3"
-                        class="w-full border-gray-300 rounded-md shadow-sm focus:border-red-500 focus:ring focus:ring-red-200">{{ old('description') }}</textarea>
+                    <textarea name="description" id="description" rows="3" placeholder="Enter album description"
+                        class="w-full pt-1 pl-2 border border-gray-300 rounded-md shadow-sm">{{ old('description') }}</textarea>
                     @error('description')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -32,7 +32,7 @@
                     <label for="cover_image" class="block text-gray-700 font-medium mb-2">Cover Image (Optional)</label>
                     <input type="file" name="cover_image" id="cover_image" accept="image/*"
                         class="w-full border border-gray-300 rounded-md p-2">
-                    <p class="text-gray-500 text-sm mt-1">Recommended size: 800x800 pixels</p>
+                    {{-- <p class="text-gray-500 text-sm mt-1">Recommended size: 800x800 pixels</p> --}}
                     @error('cover_image')
                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -52,7 +52,7 @@
                         class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-md">
                         Cancel
                     </a>
-                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md">
+                    <button type="submit" class="bg-black hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">
                         Create Album
                     </button>
                 </div>

@@ -64,7 +64,7 @@
                         class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-md">
                         Cancel
                     </a>
-                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md">
+                    <button type="submit" class="bg-black hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">
                         Update Album
                     </button>
                 </div>

@@ -8,7 +8,7 @@
                 $isSaved = \App\Models\SavedPost::where('user_id', Auth::id())->where('post_id', $post->id)->exists();
             @endphp
             <button type="button"
-                class="save-btn bg-red-100 hover:bg-red-200 text-red-600 font-medium py-2 px-4 rounded-full"
+                class="save-btn bg-sky-100 hover:bg-sky-200 text-sky-600 font-medium py-2 px-4 rounded-full"
                 data-post-id="{{ $post->id }}" data-saved="{{ $isSaved ? 'true' : 'false' }}">
                 <i class="bookmark-icon {{ $isSaved ? 'fas' : 'far' }} fa-bookmark mr-1"></i>
                 <span class="bookmark-text">{{ $isSaved ? 'Saved' : 'Save' }}</span>

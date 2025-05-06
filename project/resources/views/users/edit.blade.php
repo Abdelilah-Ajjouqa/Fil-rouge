@@ -33,8 +33,8 @@
                                         file:mr-4 file:py-2 file:px-4
                                         file:rounded-full file:border-0
                                         file:text-sm file:font-semibold
-                                        file:bg-red-50 file:text-red-700
-                                        hover:file:bg-red-100">
+                                        file:bg-sky-50 file:text-sky-700
+                                        hover:file:bg-sky-100">
                                         <p class="text-xs text-gray-500 mt-1">Recommended: Square image, at least 400x400px
                                         </p>
                                     </div>
@@ -61,8 +61,8 @@
                                 file:mr-4 file:py-2 file:px-4
                                 file:rounded-full file:border-0
                                 file:text-sm file:font-semibold
-                                file:bg-red-50 file:text-red-700
-                                hover:file:bg-red-100">
+                                file:bg-sky-50 file:text-sky-700
+                                hover:file:bg-sky-100">
                                 <p class="text-xs text-gray-500 mt-1">Recommended: 1500x500px</p>
                                 @error('cover')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

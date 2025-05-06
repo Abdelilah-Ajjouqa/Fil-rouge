@@ -7,7 +7,7 @@
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-2xl font-bold">My Albums</h1>
             <a href="{{ route('albums.create') }}"
-                class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-full">
+                class="bg-black hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-full">
                 <i class="fas fa-plus mr-1"></i> Create Album
             </a>
         </div>
@@ -20,7 +20,7 @@
                 <h3 class="text-xl font-semibold mb-2">No albums yet</h3>
                 <p class="text-gray-600 mb-4">Create albums to organize your posts</p>
                 <a href="{{ route('albums.create') }}"
-                    class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
+                    class="bg-black hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full">
                     Create your first album
                 </a>
             </div>

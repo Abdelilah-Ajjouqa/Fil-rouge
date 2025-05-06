@@ -123,9 +123,9 @@
                                                         </button>
                                                     </form>
                                                 @endif
-                                                <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
+                                                {{-- <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
                                                     <i class="fas fa-share-alt mr-2"></i> Share
-                                                </a>
+                                                </a> --}}
                                                 <a href="{{ asset('storage/' . $media->path) }}"
                                                     download="{{ $item->title }}"
                                                     class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
@@ -140,14 +140,14 @@
                     </div>
                 </div>
             @empty
-                <div class="col-span-full text-center py-10">
-                    <div class="text-gray-500 mb-4">
+                <div class="col-span-full text-center mx-auto py-10">
+                    <div class="text-gray-500 mb-4 mx-auto">
                         <i class="fas fa-images text-5xl"></i>
                     </div>
-                    <h3 class="text-xl font-semibold mb-2">No posts in this album yet</h3>
-                    @if (Auth::id() === $album->user_id)
+                    {{-- <h3 class="text-xl font-semibold mb-2">No posts in this album yet</h3> --}}
+                    {{-- @if (Auth::id() === $album->user_id)
                         <p class="text-gray-600 mb-4">Start adding posts to your album!</p>
-                    @endif
+                    @endif --}}
                 </div>
             @endforelse
         </div>

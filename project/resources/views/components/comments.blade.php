@@ -10,17 +10,17 @@
                 <img src="{{ Auth::user()->avatar ?? 'https://placehold.co/40' }}" alt="User"
                     class="w-8 h-8 rounded-full mr-2">
                 <input type="text" name="content" placeholder="Add a comment"
-                    class="flex-grow border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    class="flex-grow border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-sky-500"
                     required>
                 <button type="submit"
-                    class="ml-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-8 h-8 flex items-center justify-center">
+                    class="ml-2 bg-sky-500 hover:bg-sky-600 text-white rounded-full w-8 h-8 flex items-center justify-center">
                     <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
         </form>
     @else
         <p class="text-center mb-4">
-            <a href="{{ route('auth.login.form') }}" class="text-red-600 hover:underline">Log in</a> to add a comment
+            <a href="{{ route('auth.login.form') }}" class="text-sky-600 hover:underline">Log in</a> to add a comment
         </p>
     @endauth
 

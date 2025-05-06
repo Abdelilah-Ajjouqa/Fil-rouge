@@ -184,7 +184,7 @@
                     <h3 class="text-xl font-semibold mb-2">No saved posts yet</h3>
                     <p class="text-gray-600 mb-4">Save posts to find them later</p>
                     <a href="{{ route('posts.index') }}"
-                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
+                        class="bg-black hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full">
                         Discover ideas
                     </a>
                 </div>
@@ -246,7 +246,7 @@
                     @if (Auth::check() && Auth::id() == $user->id)
                         <p class="text-gray-600 mb-4">Create albums to organize your posts</p>
                         <a href="{{ route('albums.create') }}"
-                            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
+                            class="bg-black hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full">
                             Create your first album
                         </a>
                     @endif

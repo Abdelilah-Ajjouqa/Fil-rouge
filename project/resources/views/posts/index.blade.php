@@ -15,7 +15,7 @@
                 <h1 class="text-2xl font-bold">Discover Ideas</h1>
                 @auth
                     <a href="{{ route('posts.create') }}"
-                        class="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full flex items-center">
+                        class="bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-full flex items-center">
                         <i class="fas fa-plus mr-2"></i> Create post
                     </a>
                 @endauth
@@ -109,12 +109,12 @@
                         <p class="text-gray-600">Be the first to create a post!</p>
                         @auth
                             <a href="{{ route('posts.create') }}"
-                                class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
+                                class="mt-4 inline-block bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-full">
                                 Create post
                             </a>
                         @else
                             <a href="{{ route('auth.login.form') }}"
-                                class="mt-4 inline-block bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-full">
+                                class="mt-4 inline-block bg-sky-500 hover:bg-sky-600 text-white font-semibold py-2 px-4 rounded-full">
                                 Log in to create posts
                             </a>
                         @endauth

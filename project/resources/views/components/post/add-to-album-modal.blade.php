@@ -49,7 +49,7 @@
                                 userAlbumsContainer.innerHTML = `
                             <div class="text-center py-6">
                                 <p class="text-gray-500 mb-4">You don't have any albums yet.</p>
-                                <a href="{{ route('albums.create') }}" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-full">
+                                <a href="{{ route('albums.create') }}" class="bg-black hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-full">
                                     Create an album
                                 </a>
                             </div>
@@ -73,7 +73,7 @@
                                 }
 
                                 let buttonHtml = `
-                            <button class="add-to-album-btn bg-red-600 hover:bg-red-700 text-white font-medium py-1 px-3 rounded-full text-sm" data-album-id="${album.id}">
+                            <button class="add-to-album-btn bg-sky-500 hover:bg-sky-600 text-white font-medium py-1 px-3 rounded-full text-sm" data-album-id="${album.id}">
                                 Add
                             </button>
                         `;
@@ -160,7 +160,7 @@
                     .then(data => {
                         if (data.status === 'success') {
                             buttonElement.innerHTML = '<i class="fas fa-check"></i>';
-                            buttonElement.classList.remove('bg-red-600', 'hover:bg-red-700');
+                            buttonElement.classList.remove('bg-sky-500', 'hover:bg-sky-600');
                             buttonElement.classList.add('bg-green-500', 'hover:bg-green-600');
 
                             // Disable the button after successful addition
