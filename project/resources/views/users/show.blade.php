@@ -48,10 +48,6 @@
                         </button>
                     @endif
                 @endauth
-                
-                <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-full">
-                    <i class="fas-fa-share-alt mr-1"></i> Share
-                </button>
             </div>
         </div>
 

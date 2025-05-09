@@ -90,7 +90,7 @@
                 </div>
             </div>
         @empty
-            <p class="text-center text-gray-500">No comments yet</p>
+            <p class="text-center text-gray-500 my-3">No comments yet</p>
         @endforelse
     </div>
 </div>

@@ -123,9 +123,6 @@
                                                         </button>
                                                     </form>
                                                 @endif
-                                                {{-- <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
-                                                    <i class="fas fa-share-alt mr-2"></i> Share
-                                                </a> --}}
                                                 <a href="{{ asset('storage/' . $media->path) }}"
                                                     download="{{ $item->title }}"
                                                     class="block px-4 py-2 text-gray-700 hover:bg-gray-100">

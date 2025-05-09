@@ -17,10 +17,6 @@
     </div>
 
     <div class="flex space-x-3">
-        <button class="text-gray-600 hover:bg-gray-100 p-2 rounded-full">
-            <i class="fas fa-share-alt text-xl"></i>
-        </button>
-
         @if (Auth::check() && Auth::id() == $post->user_id)
             <div class="relative" x-data="{ open: false }">
                 <button @click="open = !open" class="text-gray-600 hover:bg-gray-100 p-2 rounded-full">
@@ -65,8 +61,8 @@
         @auth
             @if (Auth::id() == $post->user_id)
                 <button id="add-to-album-btn"
-                    class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-full">
-                    <i class="fas fa-folder-plus mr-1"></i> Add to Album
+                    class="flex justify-center items-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-2 rounded-full">
+                    <i class="fas fa-folder-plus"></i>
                 </button>
             @endif
         @endauth
