@@ -68,7 +68,7 @@
         </div>
 
         <!-- Recent Activity -->
-        <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="bg-white rounded-lg shadow-md p-6 h-[500px] overflow-y-scroll">
             <h2 class="text-xl font-semibold mb-4">Recent Activity</h2>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
@@ -76,8 +76,8 @@
                         <tr>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User
                             </th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Action</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action
+                            </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item
                             </th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
@@ -86,42 +86,48 @@
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
                         @forelse($activities as $activity)
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        <img class="h-10 w-10 rounded-full" src="{{ $activity->user->avatar ?? 'https://via.placeholder.com/40' }}" alt="">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full"
+                                                src="{{ $activity->user->avatar ?? 'https://via.placeholder.com/40' }}"
+                                                alt="">
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">
+                                                {{ $activity->user->name ?? $activity->user->first_name . ' ' . $activity->user->last_name }}
+                                            </div>
+                                            <div class="text-sm text-gray-500">{{ $activity->user->email }}</div>
+                                        </div>
                                     </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900">{{ $activity->user->name ?? ($activity->user->first_name . ' ' . $activity->user->last_name) }}</div>
-                                        <div class="text-sm text-gray-500">{{ $activity->user->email }}</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                @php
-                                    $color = match($activity->action) {
-                                        'created' => 'bg-green-100 text-green-800',
-                                        'commented' => 'bg-blue-100 text-blue-800',
-                                        'deleted' => 'bg-red-100 text-red-800',
-                                        default => 'bg-gray-100 text-gray-800',
-                                    };
-                                @endphp
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $color }}">
-                                    {{ ucfirst($activity->action) }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $activity->description }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $activity->created_at->diffForHumans() }}
-                            </td>
-                        </tr>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    @php
+                                        $color = match ($activity->action) {
+                                            'created' => 'bg-green-100 text-green-800',
+                                            'commented' => 'bg-blue-100 text-blue-800',
+                                            'deleted' => 'bg-red-100 text-red-800',
+                                            default => 'bg-gray-100 text-gray-800',
+                                        };
+                                    @endphp
+                                    <span
+                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $color }}">
+                                        {{ ucfirst($activity->action) }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $activity->description }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $activity->created_at->diffForHumans() }}
+                                </td>
+                            </tr>
                         @empty
-                        <tr>
-                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">No recent activity found.</td>
-                        </tr>
+                            <tr>
+                                <td colspan="4" class="px-6 py-4 text-center text-gray-500">No recent activity found.
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>

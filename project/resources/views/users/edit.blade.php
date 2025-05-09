@@ -76,7 +76,7 @@
                                 <div>
                                     <label for="first_name" class="block text-gray-700 font-medium mb-2">First Name</label>
                                     <input type="text" id="first_name" name="first_name" value="{{ $user->first_name }}"
-                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 @error('first_name') border-red-500 @enderror"
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 @error('first_name') border-red-500 @enderror"
                                         required>
                                     @error('first_name')
                                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -86,7 +86,7 @@
                                 <div>
                                     <label for="last_name" class="block text-gray-700 font-medium mb-2">Last Name</label>
                                     <input type="text" id="last_name" name="last_name" value="{{ $user->last_name }}"
-                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 @error('last_name') border-red-500 @enderror"
+                                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 @error('last_name') border-red-500 @enderror"
                                         required>
                                     @error('last_name')
                                         <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -97,7 +97,7 @@
                             <div class="mb-4">
                                 <label for="username" class="block text-gray-700 font-medium mb-2">Username</label>
                                 <input type="text" id="username" name="username" value="{{ $user->username }}"
-                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 @error('username') border-red-500 @enderror"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 @error('username') border-red-500 @enderror"
                                     required>
                                 @error('username')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -107,7 +107,7 @@
                             <div class="mb-4">
                                 <label for="email" class="block text-gray-700 font-medium mb-2">Email</label>
                                 <input type="email" id="email" name="email" value="{{ $user->email }}"
-                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 @error('email') border-red-500 @enderror"
+                                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 @error('email') border-red-500 @enderror"
                                     required>
                                 @error('email')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -120,7 +120,7 @@
                                     Cancel
                                 </a>
                                 <button type="submit"
-                                    class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-full">
+                                    class="bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-4 rounded-full">
                                     Save Changes
                                 </button>
                             </div>
