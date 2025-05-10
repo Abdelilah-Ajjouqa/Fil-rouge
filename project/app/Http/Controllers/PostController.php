@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Exception;
 use App\Models\Activity;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
@@ -56,7 +57,6 @@ class PostController extends Controller
                 }
             }
 
-            // Log activity
             Activity::create([
                 'user_id' => $request->user()->id,
                 'action' => 'created',
@@ -78,17 +78,16 @@ class PostController extends Controller
     public function show(string $id)
     {
         $post = Posts::with('mediaContent', 'tags')->findOrFail($id);
-        
-        // Get related posts based on tags
+
         $relatedPosts = Posts::whereHas('tags', function ($query) use ($post) {
             $query->whereIn('tags.id', $post->tags->pluck('id'));
         })
-        ->where('id', '!=', $post->id) // Exclude the current post
-        ->where('status', '!=', Posts::is_archived)
-        ->with(['mediaContent', 'user', 'tags'])
-        ->inRandomOrder()
-        // ->limit(6)
-        ->get();
+            ->where('id', '!=', $post->id)
+            ->where('status', '!=', Posts::is_archived)
+            ->with(['mediaContent', 'user', 'tags'])
+            ->inRandomOrder()
+            // ->limit(6)
+            ->get();
 
         return view('posts.show', compact('post', 'relatedPosts'));
     }
@@ -154,7 +153,7 @@ class PostController extends Controller
 
         // Log activity
         Activity::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'action' => 'deleted',
             'item_type' => 'post',
             'item_id' => $post->id,

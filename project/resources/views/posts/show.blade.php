@@ -30,9 +30,7 @@
 
     <!-- Add to Album Modal -->
     @auth
-        @if(Auth::id() == $post->user_id)
-            <x-post.add-to-album-modal :post="$post" />
-        @endif
+        <x-post.add-to-album-modal :post="$post" />
     @endauth
 @endsection
 

@@ -1,7 +1,6 @@
 @props(['post'])
 
-<!-- Add to Album Modal (hidden by default) -->
-<div id="add-to-album-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+<div id="add-to-album-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
     <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
         <div class="flex justify-between items-center border-b p-4">
             <h3 class="text-lg font-semibold">Add to Album</h3>
@@ -11,9 +10,48 @@
         </div>
 
         <div class="p-4" id="user-albums-container">
-            <div class="flex justify-center items-center h-32">
-                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
-            </div>
+            @auth
+                @if (Auth::user()->albums->isEmpty())
+                    <div class="text-center py-6">
+                        <div class="text-gray-400 mb-2">
+                            <i class="fas fa-folder-open text-4xl"></i>
+                        </div>
+                        <p class="text-gray-600 mb-4">You don't have any albums yet</p>
+                        <a href="{{ route('albums.create') }}"
+                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full inline-block">
+                            Create Album
+                        </a>
+                    </div>
+                @else
+                    <div class="grid gap-2">
+                        @foreach (Auth::user()->albums as $album)
+                            <div class="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-12 h-12 rounded-lg bg-gray-200 overflow-hidden mr-3">
+                                        @if ($album->cover_image)
+                                            <img src="{{ asset('storage/' . $album->cover_image) }}"
+                                                alt="{{ $album->title }}" class="w-full h-full object-cover">
+                                        @else
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <i class="fas fa-images text-gray-400"></i>
+                                            </div>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">{{ $album->title }}</h4>
+                                        <p class="text-sm text-gray-500">{{ $album->posts->count() }} posts</p>
+                                    </div>
+                                </div>
+                                <button
+                                    class="add-to-album-btn bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm"
+                                    data-album-id="{{ $album->id }}" data-post-id="{{ $post->id }}">
+                                    Add
+                                </button>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            @endauth
         </div>
     </div>
 </div>

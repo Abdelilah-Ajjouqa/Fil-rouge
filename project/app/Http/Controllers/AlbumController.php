@@ -169,12 +169,10 @@ class AlbumController extends Controller
     public function addPost(Request $request, $id)
     {
         try {
-            // Find the album with explicit user_id check
             $album = Album::where('id', $id)
                 ->where('user_id', Auth::id())
                 ->firstOrFail();
 
-            // Validate the post_id
             $request->validate([
                 'post_id' => 'required|exists:posts,id'
             ]);
@@ -189,14 +187,14 @@ class AlbumController extends Controller
                 ]);
             }
 
-            // Add post to album
+            // Add post to album (removed user ownership check for posts)
             $album->posts()->attach($postId);
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Post added to album successfully'
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Album not found or you do not have permission to modify it: ' . $e->getMessage()

@@ -59,12 +59,10 @@
         @endif
 
         @auth
-            @if (Auth::id() == $post->user_id)
-                <button id="add-to-album-btn"
-                    class="flex justify-center items-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-2 rounded-full">
-                    <i class="fas fa-folder-plus"></i>
-                </button>
-            @endif
+            <button id="add-to-album-btn"
+                class="flex justify-center items-center bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-2 rounded-full">
+                <i class="fas fa-folder-plus"></i>
+            </button>
         @endauth
     </div>
 </div>
