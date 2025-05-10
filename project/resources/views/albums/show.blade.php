@@ -123,6 +123,17 @@
                                                         </button>
                                                     </form>
                                                 @endif
+                                                @if (Auth::id() === $album->user_id)
+                                                    <form action="{{ route('albums.posts.remove', ['id' => $album->id, 'post_id' => $item->id]) }}" method="POST"
+                                                        onsubmit="return confirm('Are you sure you want to remove this post from the album?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                            class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
+                                                            <i class="fas fa-minus-circle mr-2"></i> Remove from album
+                                                        </button>
+                                                    </form>
+                                                @endif
                                                 <a href="{{ asset('storage/' . $media->path) }}"
                                                     download="{{ $item->title }}"
                                                     class="block px-4 py-2 text-gray-700 hover:bg-gray-100">
